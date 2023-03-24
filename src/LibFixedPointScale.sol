@@ -38,11 +38,11 @@ import "./FixedPointConstants.sol";
 /// don't and is carefully crafting an attack, so we are most conservative and
 /// suspicious of their inputs and actions.
 library LibFixedPointScale {
-    /// Scale a fixed point decimal of some scale factor to match `DECIMALS`.
+    /// Scale a fixed point decimal of some scale factor to 18 decimals.
     /// @param a_ Some fixed point decimal value.
     /// @param aDecimals_ The number of fixed decimals of `a_`.
     /// @param rounding_ Rounding direction.
-    /// @return `a_` scaled to match `DECIMALS`.
+    /// @return `a_` scaled to 18 decimals.
     function scale18(uint256 a_, uint256 aDecimals_, uint256 rounding_) internal pure returns (uint256) {
         uint256 decimals_;
         if (FIXED_POINT_DECIMALS == aDecimals_) {
@@ -60,11 +60,11 @@ library LibFixedPointScale {
         }
     }
 
-    /// Scale a fixed point decimals of `DECIMALS` to some other scale.
-    /// @param a_ A `DECIMALS` fixed point decimals.
+    /// Scale an 18 decimal fixed point value to some other scale.
+    /// @param a_ An 18 decimal fixed point number.
     /// @param targetDecimals_ The new scale of `a_`.
     /// @param rounding_ Rounding direction.
-    /// @return `a_` rescaled from `DECIMALS` to `targetDecimals_`.
+    /// @return `a_` rescaled from 18 to `targetDecimals_`.
     function scaleN(uint256 a_, uint256 targetDecimals_, uint256 rounding_) internal pure returns (uint256) {
         uint256 decimals_;
         if (targetDecimals_ == FIXED_POINT_DECIMALS) {
@@ -82,11 +82,11 @@ library LibFixedPointScale {
         }
     }
 
-    /// Scale a fixed point decimals of `DECIMALS` that represents a ratio of
-    /// a_:b_ according to the decimals of a and b that MAY NOT be `DECIMALS`.
-    /// i.e. a subsequent call to `a_.fixedPointMul(ratio_)` would yield the value
-    /// that it would have as though `a_` and `b_` were both `DECIMALS` and we
-    /// hadn't rescaled the ratio.
+    /// Scale an 18 decimal fixed point ratio of a_:b_ according to the decimals
+    /// of a and b that each MAY NOT be 18.
+    /// i.e. a subsequent call to `a_.fixedPointMul(ratio_)` would yield the
+    /// value that it would have as though `a_` and `b_` were both 18 decimals
+    /// and we hadn't rescaled the ratio.
     /// @param ratio_ The ratio to be scaled.
     /// @param aDecimals_ The decimals of the ratio numerator.
     /// @param bDecimals_ The decimals of the ratio denominator.
@@ -100,8 +100,6 @@ library LibFixedPointScale {
     }
 
     /// Scale a fixed point up or down by `scaleBy_` orders of magnitude.
-    /// The caller MUST ensure the end result matches `DECIMALS` if other
-    /// functions in this library are to work correctly.
     /// Notably `scaleBy` is a SIGNED integer so scaling down by negative OOMS
     /// is supported.
     /// @param a_ Some integer of any scale.
@@ -140,5 +138,14 @@ library LibFixedPointScale {
             scaled_ += 1;
         }
         return scaled_;
+    }
+
+    /// Scales `a_` up by a specified number of decimals.
+    /// @param a_ The number to scale up.
+    /// @param scaleUpBy_ Number of orders of magnitude to scale `b_` up by.
+    /// Errors if overflows.
+    /// @return `a_` scaled up by `scaleUpBy_`.
+    function scaleUp(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256) {
+        return a_ * (10 ** scaleUpBy_);
     }
 }
