@@ -91,7 +91,10 @@ contract LibFixedPointScaleTest is Test {
         vm.assume(scaleBy_ > 0);
         vm.assume(!scaleUpWillOverflow(a_, uint8(scaleBy_)));
 
-        assertEq(LibFixedPointScale.scaleUp(a_, uint256(uint8(scaleBy_))), LibFixedPointScale.scaleBy(a_, scaleBy_, rounding_));
+        assertEq(
+            LibFixedPointScale.scaleUp(a_, uint256(uint8(scaleBy_))),
+            LibFixedPointScale.scaleBy(a_, scaleBy_, rounding_)
+        );
     }
 
     function testScaleByUpOverflow(uint256 a_, int8 scaleBy_, uint256 rounding_) public {
@@ -197,15 +200,9 @@ contract LibFixedPointScaleTest is Test {
     }
 
     function testScaleRatioExamples() public {
-        assertEq(
-            LibFixedPointScale.scaleRatio(1e18, 6, 18, 0),
-            1e30
-        );
+        assertEq(LibFixedPointScale.scaleRatio(1e18, 6, 18, 0), 1e30);
 
-        assertEq(
-            LibFixedPointScale.scaleRatio(1e18, 18, 6, 0),
-            1e6
-        );
+        assertEq(LibFixedPointScale.scaleRatio(1e18, 18, 6, 0), 1e6);
     }
 
     // @todo fuzz scale ratio
