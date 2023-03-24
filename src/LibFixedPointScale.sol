@@ -148,7 +148,8 @@ library LibFixedPointScale {
     /// lib.
     /// @param a_ The number to scale down.
     /// @param scaleDownBy_ Number of orders of magnitude to scale `a_` down by.
-    /// @param rounding_ Rounding direction as per Open Zeppelin Math.
+    /// @param rounding_ Rounding direction. Unknown values are treated as
+    /// rounding DOWN.
     /// @return `a_` scaled down by `scaleDownBy_` and rounded.
     function scaleDown(
         uint256 a_,
