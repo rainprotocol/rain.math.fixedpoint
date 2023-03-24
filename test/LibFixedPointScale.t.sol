@@ -205,25 +205,49 @@ contract LibFixedPointScaleTest is Test {
         assertEq(LibFixedPointScale.scaleRatio(1e18, 18, 6, 0), 1e6);
     }
 
-    // @todo fuzz scale ratio
-    // function scaleRatioWillOverflow(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_) internal returns (bool) {
-    //     if (18 + bDecimals_ < aDecimals_) {
-    //         return true;
-    //     }
-    //     int8 diff_ = int8(bDecimals_) - int8(aDecimals_);
-    //     if (diff_ > 0) {
-    //         return scaleUpWillOverflow(ratio_, uint8(diff_));
-    //     }
-    //     else {
-    //         return scaleDownWillOverflow(ratio_, stdMath.abs(diff_));
-    //     }
-    // }
+    function scaleRatioWillOverflow(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_)
+        internal
+        returns (bool)
+    {
+        if (18 + uint256(bDecimals_) < aDecimals_) {
+            return true;
+        }
 
-    // function testScaleRatioFuzzALarge(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_) public {
-    //     vm.assume(!scaleRatioWillOverflow(ratio_, aDecimals_, bDecimals_, rounding_));
-    //     assertEq(
-    //         LibFixedPointScale.scaleRatio(ratio_, aDecimals_, bDecimals_, rounding_),
-    //         ratio_ * (10 ** (18 + bDecimals_ - aDecimals_)) / 1e18
-    //     );
+        if (scaleUpWillOverflow(ratio_, 18 + uint256(bDecimals_) - uint256(aDecimals_))) {
+            return true;
+        }
+
+        // I think this is more a limit of the fuzz test than the underlying.
+        // @todo relax this constraint somehow.
+        if (scaleDownWillOverflow(bDecimals_)) {
+            return true;
+        }
+
+        int8 diff_ = int8(bDecimals_) - int8(aDecimals_);
+        if (diff_ > 0) {
+            return scaleUpWillOverflow(ratio_, uint8(diff_));
+        } else {
+            return scaleDownWillOverflow(stdMath.abs(diff_));
+        }
+    }
+
+    function testScaleRatioFuzz(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_) public {
+        vm.assume(!scaleRatioWillOverflow(ratio_, aDecimals_, bDecimals_, rounding_));
+
+        assertEq(
+            LibFixedPointScale.scaleRatio(ratio_, aDecimals_, bDecimals_, rounding_),
+            LibFixedPointScale.scaleDown(ratio_ * (10 ** (18 + bDecimals_ - aDecimals_)), 18, rounding_)
+        );
+    }
+
+    // @todo This DOES NOT reliably overflow because the `scaleRatioWillOverflow`
+    // function is too conservative. If it was accurate then this fuzz would
+    // pass.
+    //
+    // function testScaleRatioFuzzOverflow(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_) public {
+    //     vm.assume(scaleRatioWillOverflow(ratio_, aDecimals_, bDecimals_, rounding_));
+
+    //     vm.expectRevert(stdError.arithmeticError);
+    //     LibFixedPointScale.scaleRatio(ratio_, aDecimals_, bDecimals_, rounding_);
     // }
 }
