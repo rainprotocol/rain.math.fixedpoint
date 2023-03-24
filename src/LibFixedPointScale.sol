@@ -4,30 +4,19 @@ pragma solidity ^0.8.18;
 import "./FixedPointConstants.sol";
 
 /// @title LibFixedPointScale
-/// @notice Sometimes we want to do math with decimal values but all we have
-/// are integers, typically uint256 integers. Floats are very complex so we
-/// don't attempt to simulate them. Instead we provide a standard definition of
-/// "one" as 10 ** 18 and scale everything up/down to this as fixed point math.
+/// @notice Tools to scale unsigned values to/from 18 decimal fixed point
+/// representation.
 ///
-/// Overflows SATURATE rather than error, e.g. scaling max uint256 up will result
-/// in max uint256. The max uint256 as decimal is roughly 1e77 so scaling values
-/// comparable to 1e18 is unlikely to ever saturate in practise. For a typical
-/// use case involving tokens, the entire supply of a token rescaled up a full
-/// 18 decimals would still put it "only" in the region of ~1e40 which has a full
-/// 30 orders of magnitude buffer before running into saturation issues. However,
-/// there's no theoretical reason that a token or any other use case couldn't use
-/// large numbers or extremely precise decimals that would push this library to
-/// saturation point, so it MUST be treated with caution around the edge cases.
+/// Overflows error and underflows are rounded up or down explicitly.
 ///
-/// One case where values could come near the saturation/overflow point is phantom
-/// overflow. This is where an overflow happens during the internal logic of some
-/// operation like "fixed point multiplication" even though the final result fits
-/// within uint256. The fixed point multiplication and division functions are
-/// thin wrappers around Open Zeppelin's `mulDiv` function, that handles phantom
-/// overflow, reducing the problems of rescaling overflow/saturation to the input
-/// and output range rather than to the internal implementation details. For this
-/// library that gives an additional full 18 orders of magnitude for safe fixed
-/// point multiplication operations.
+/// The max uint256 as decimal is roughly 1e77 so scaling values comparable to
+/// 1e18 is unlikely to ever overflow in most contexts. For a typical use case
+/// involving tokens, the entire supply of a token rescaled up a full 18 decimals
+/// would still put it "only" in the region of ~1e40 which has a full 30 orders
+/// of magnitude buffer before running into saturation issues. However, there's
+/// no theoretical reason that a token or any other use case couldn't use large
+/// numbers or extremely precise decimals that would push this library to
+/// overflow point, so it MUST be treated with caution around the edge cases.
 ///
 /// Scaling down ANY fixed point decimal also reduces the precision which can
 /// lead to  dust or in the worst case trapped funds if subsequent subtraction
@@ -36,18 +25,18 @@ import "./FixedPointConstants.sol";
 /// significant issue. If you need to retain full/arbitrary precision in the case
 /// of downscaling DO NOT use this library.
 ///
-/// All rescaling and/or division operations in this library require the rounding
-/// flag from Open Zeppelin math. This allows and forces the caller to specify
-/// where dust sits due to rounding. For example the caller could round up when
-/// taking tokens from `msg.sender` and round down when returning them, ensuring
-/// that any dust in the round trip accumulates in the contract rather than
-/// opening an exploit or reverting and trapping all funds. This is exactly how
-/// the ERC4626 vault spec handles dust and is a good reference point in general.
-/// Typically the contract holding tokens and non-interactive participants should
-/// be favoured by rounding calculations rather than active participants. This is
-/// because we assume that an active participant, e.g. `msg.sender`, knowns
-/// something we don't and is carefully crafting an attack, so we are most
-/// conservative and suspicious of their inputs and actions.
+/// All rescaling and/or division operations in this library require a rounding
+/// flag. This allows and forces the caller to specify where dust sits due to
+/// rounding. For example the caller could round up when taking tokens from
+/// `msg.sender` and round down when returning them, ensuring that any dust in
+/// the round trip accumulates in the contract rather than opening an exploit or
+/// reverting and trapping all funds. This is exactly how the ERC4626 vault spec
+/// handles dust and is a good reference point in general. Typically the contract
+/// holding tokens and non-interactive participants should be favoured by
+/// rounding calculations rather than active participants. This is because we
+/// assume that an active participant, e.g. `msg.sender`, knowns something we
+/// don't and is carefully crafting an attack, so we are most conservative and
+/// suspicious of their inputs and actions.
 library LibFixedPointScale {
 
     /// Scale a fixed point decimal of some scale factor to match `DECIMALS`.
