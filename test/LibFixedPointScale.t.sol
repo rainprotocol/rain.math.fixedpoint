@@ -141,4 +141,13 @@ contract LibFixedPointScaleTest is Test {
             scaleUp(a_, scaleUp_)
         );
     }
+
+    function testScaleNGt18Overflow(uint256 a_, uint8 targetDecimals_, uint256 rounding_) public {
+        vm.assume(targetDecimals_ > 18);
+
+        uint256 scaleUp_ = targetDecimals_ - 18;
+        vm.assume(scaleUpWillOverflow(a_, scaleUp_));
+        vm.expectRevert(stdError.arithmeticError);
+        LibFixedPointScale.scaleN(a_, targetDecimals_, rounding_);
+    }
 }
