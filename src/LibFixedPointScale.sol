@@ -134,6 +134,9 @@ library LibFixedPointScale {
     function scaleDown(uint256 a_, uint256 scaleDownBy_, uint256 rounding_) internal pure returns (uint256) {
         uint256 b_ = 10 ** scaleDownBy_;
         uint256 scaled_ = a_ / b_;
+        // Intentionally doing a divide before multiply here to detect the need
+        // to round up.
+        //slither-disable-next-line divide-before-multiply
         if (rounding_ == ROUND_UP && a_ != scaled_ * b_) {
             scaled_ += 1;
         }
