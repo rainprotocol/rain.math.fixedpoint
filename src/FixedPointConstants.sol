@@ -13,3 +13,6 @@ uint256 constant ROUND_DOWN = 0;
 
 /// @dev Calculations MUST round up.
 uint256 constant ROUND_UP = 1;
+
+/// @dev Can't scale by more than this many OOMs.
+uint256 constant MAX_RESCALE_OOMS = 77;

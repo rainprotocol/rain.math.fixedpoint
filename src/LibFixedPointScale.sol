@@ -38,17 +38,12 @@ import "./FixedPointConstants.sol";
 /// don't and is carefully crafting an attack, so we are most conservative and
 /// suspicious of their inputs and actions.
 library LibFixedPointScale {
-
     /// Scale a fixed point decimal of some scale factor to match `DECIMALS`.
     /// @param a_ Some fixed point decimal value.
     /// @param aDecimals_ The number of fixed decimals of `a_`.
     /// @param rounding_ Rounding direction.
     /// @return `a_` scaled to match `DECIMALS`.
-    function scale18(
-        uint256 a_,
-        uint256 aDecimals_,
-        uint256 rounding_
-    ) internal pure returns (uint256) {
+    function scale18(uint256 a_, uint256 aDecimals_, uint256 rounding_) internal pure returns (uint256) {
         uint256 decimals_;
         if (FIXED_POINT_DECIMALS == aDecimals_) {
             return a_;
@@ -70,11 +65,7 @@ library LibFixedPointScale {
     /// @param targetDecimals_ The new scale of `a_`.
     /// @param rounding_ Rounding direction.
     /// @return `a_` rescaled from `DECIMALS` to `targetDecimals_`.
-    function scaleN(
-        uint256 a_,
-        uint256 targetDecimals_,
-        uint256 rounding_
-    ) internal pure returns (uint256) {
+    function scaleN(uint256 a_, uint256 targetDecimals_, uint256 rounding_) internal pure returns (uint256) {
         uint256 decimals_;
         if (targetDecimals_ == FIXED_POINT_DECIMALS) {
             return a_;
@@ -100,18 +91,12 @@ library LibFixedPointScale {
     /// @param aDecimals_ The decimals of the ratio numerator.
     /// @param bDecimals_ The decimals of the ratio denominator.
     /// @param rounding_ Rounding direction.
-    function scaleRatio(
-        uint256 ratio_,
-        uint8 aDecimals_,
-        uint8 bDecimals_,
-        uint256 rounding_
-    ) internal pure returns (uint256) {
-        return
-            scaleBy(
-                ratio_,
-                int8(bDecimals_) - int8(aDecimals_),
-                rounding_
-            );
+    function scaleRatio(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_)
+        internal
+        pure
+        returns (uint256)
+    {
+        return scaleBy(ratio_, int8(bDecimals_) - int8(aDecimals_), rounding_);
     }
 
     /// Scale a fixed point up or down by `scaleBy_` orders of magnitude.
@@ -125,11 +110,7 @@ library LibFixedPointScale {
     /// be considered if changing it to another type.
     /// @param rounding_ Rounding direction.
     /// @return `a_` rescaled according to `scaleBy_`.
-    function scaleBy(
-        uint256 a_,
-        int8 scaleBy_,
-        uint256 rounding_
-    ) internal pure returns (uint256) {
+    function scaleBy(uint256 a_, int8 scaleBy_, uint256 rounding_) internal pure returns (uint256) {
         if (scaleBy_ == 0) {
             return a_;
         } else if (scaleBy_ > 0) {
@@ -148,14 +129,11 @@ library LibFixedPointScale {
     /// lib.
     /// @param a_ The number to scale down.
     /// @param scaleDownBy_ Number of orders of magnitude to scale `a_` down by.
+    /// Overflows if greater than 77.
     /// @param rounding_ Rounding direction. Unknown values are treated as
     /// rounding DOWN.
     /// @return `a_` scaled down by `scaleDownBy_` and rounded.
-    function scaleDown(
-        uint256 a_,
-        uint256 scaleDownBy_,
-        uint256 rounding_
-    ) internal pure returns (uint256) {
+    function scaleDown(uint256 a_, uint256 scaleDownBy_, uint256 rounding_) internal pure returns (uint256) {
         uint256 b_ = 10 ** scaleDownBy_;
         uint256 scaled_ = a_ / b_;
         if (rounding_ == ROUND_UP && a_ != scaled_ * b_) {
@@ -163,5 +141,4 @@ library LibFixedPointScale {
         }
         return scaled_;
     }
-
 }
