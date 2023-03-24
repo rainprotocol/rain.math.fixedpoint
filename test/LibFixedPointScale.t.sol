@@ -5,7 +5,7 @@ import "forge-std/Test.sol";
 import "../src/LibFixedPointScale.sol";
 
 contract LibFixedPointScaleTest is Test {
-    function scaleUpWillOverflow(uint256 a_, uint256 scaleBy_) internal returns (bool) {
+    function scaleUpWillOverflow(uint256 a_, uint256 scaleBy_) internal pure returns (bool) {
         unchecked {
             if (scaleBy_ > MAX_RESCALE_OOMS) {
                 return true;
@@ -16,11 +16,11 @@ contract LibFixedPointScaleTest is Test {
         }
     }
 
-    function scaleDownWillOverflow(uint256 a_, uint256 scaleDownBy_) internal returns (bool) {
+    function scaleDownWillOverflow(uint256 scaleDownBy_) internal pure returns (bool) {
         return scaleDownBy_ > MAX_RESCALE_OOMS;
     }
 
-    function scaleDownWillRound(uint256 a_, uint256 scaleDownBy_) internal returns (bool) {
+    function scaleDownWillRound(uint256 a_, uint256 scaleDownBy_) internal pure returns (bool) {
         uint256 b_ = 10 ** scaleDownBy_;
         uint256 c_ = a_ / b_;
         return c_ * b_ != a_;
@@ -41,7 +41,7 @@ contract LibFixedPointScaleTest is Test {
 
     function testScaleDownRoundDown(uint256 a_, uint8 scaleDownBy_, uint256 rounding_) public {
         vm.assume(rounding_ != ROUND_UP);
-        vm.assume(!scaleDownWillOverflow(a_, scaleDownBy_));
+        vm.assume(!scaleDownWillOverflow(scaleDownBy_));
 
         uint256 b_ = 10 ** scaleDownBy_;
         uint256 c_ = a_ / b_;
@@ -50,7 +50,7 @@ contract LibFixedPointScaleTest is Test {
     }
 
     function testScaleDownRoundUp(uint256 a_, uint8 scaleDownBy_) public {
-        vm.assume(!scaleDownWillOverflow(a_, scaleDownBy_));
+        vm.assume(!scaleDownWillOverflow(scaleDownBy_));
 
         uint256 b_ = 10 ** scaleDownBy_;
         uint256 c_ = a_ / b_;
@@ -63,7 +63,7 @@ contract LibFixedPointScaleTest is Test {
     }
 
     function testScaleDownNoRound(uint256 a_, uint8 scaleDownBy_) public {
-        vm.assume(!scaleDownWillOverflow(a_, scaleDownBy_));
+        vm.assume(!scaleDownWillOverflow(scaleDownBy_));
         vm.assume(!scaleDownWillRound(a_, scaleDownBy_));
 
         assertEq(
@@ -181,7 +181,7 @@ contract LibFixedPointScaleTest is Test {
         vm.assume(aDecimals_ > 18);
 
         uint256 scaleDown_ = aDecimals_ - 18;
-        vm.assume(!scaleDownWillOverflow(a_, scaleDown_));
+        vm.assume(!scaleDownWillOverflow(scaleDown_));
 
         assertEq(
             LibFixedPointScale.scaleDown(a_, scaleDown_, rounding_),
@@ -193,7 +193,7 @@ contract LibFixedPointScaleTest is Test {
         vm.assume(aDecimals_ > 18);
 
         uint256 scaleDown_ = aDecimals_ - 18;
-        vm.assume(scaleDownWillOverflow(a_, scaleDown_));
+        vm.assume(scaleDownWillOverflow(scaleDown_));
         vm.expectRevert(stdError.arithmeticError);
 
         LibFixedPointScale.scale18(a_, aDecimals_, rounding_);
