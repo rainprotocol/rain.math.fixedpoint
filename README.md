@@ -1,5 +1,7 @@
 # rain.math.fixedpoint
 
+Docs at https://rainprotocol.github.io/rain.math.fixedpoint
+
 ## Goals
 
 Ideally we'd not need this library as math primitives are probably best handled
