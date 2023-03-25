@@ -38,6 +38,15 @@ import "./FixedPointConstants.sol";
 /// don't and is carefully crafting an attack, so we are most conservative and
 /// suspicious of their inputs and actions.
 library LibFixedPointScale {
+    /// Scales `a_` up by a specified number of decimals.
+    /// @param a_ The number to scale up.
+    /// @param scaleUpBy_ Number of orders of magnitude to scale `b_` up by.
+    /// Errors if overflows.
+    /// @return `a_` scaled up by `scaleUpBy_`.
+    function scaleUp(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256) {
+        return a_ * (10 ** scaleUpBy_);
+    }
+
     /// Scale a fixed point decimal of some scale factor to 18 decimals.
     /// @param a_ Some fixed point decimal value.
     /// @param aDecimals_ The number of fixed decimals of `a_`.
@@ -45,19 +54,18 @@ library LibFixedPointScale {
     /// @return `a_` scaled to 18 decimals.
     function scale18(uint256 a_, uint256 aDecimals_, uint256 rounding_) internal pure returns (uint256) {
         uint256 decimals_;
-        if (FIXED_POINT_DECIMALS == aDecimals_) {
-            return a_;
-        } else if (FIXED_POINT_DECIMALS > aDecimals_) {
+        if (FIXED_POINT_DECIMALS > aDecimals_) {
             unchecked {
                 decimals_ = FIXED_POINT_DECIMALS - aDecimals_;
             }
-            return a_ * (10 ** decimals_);
-        } else {
+            a_ = a_ * (10 ** decimals_);
+        } else if (FIXED_POINT_DECIMALS < aDecimals_) {
             unchecked {
                 decimals_ = aDecimals_ - FIXED_POINT_DECIMALS;
             }
-            return scaleDown(a_, decimals_, rounding_);
+            a_ = scaleDown(a_, decimals_, rounding_);
         }
+        return a_;
     }
 
     /// Scale an 18 decimal fixed point value to some other scale.
@@ -143,12 +151,5 @@ library LibFixedPointScale {
         return scaled_;
     }
 
-    /// Scales `a_` up by a specified number of decimals.
-    /// @param a_ The number to scale up.
-    /// @param scaleUpBy_ Number of orders of magnitude to scale `b_` up by.
-    /// Errors if overflows.
-    /// @return `a_` scaled up by `scaleUpBy_`.
-    function scaleUp(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256) {
-        return a_ * (10 ** scaleUpBy_);
-    }
+
 }
