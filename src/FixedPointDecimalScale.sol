@@ -84,6 +84,27 @@ library FixedPointDecimalScale {
         }
     }
 
+    /// Scales `a_` down by a specified number of decimals, rounding in the
+    /// specified direction. Used internally by several other functions in this
+    /// lib.
+    /// @param a_ The number to scale down.
+    /// @param scaleDownBy_ Number of orders of magnitude to scale `a_` down by.
+    /// Overflows if greater than 77.
+    /// @param rounding_ Rounding direction. Unknown values are treated as
+    /// rounding DOWN.
+    /// @return `a_` scaled down by `scaleDownBy_` and rounded.
+    function scaleDown(uint256 a_, uint256 scaleDownBy_, uint256 rounding_) internal pure returns (uint256) {
+        uint256 b_ = 10 ** scaleDownBy_;
+        uint256 scaled_ = a_ / b_;
+        // Intentionally doing a divide before multiply here to detect the need
+        // to round up.
+        //slither-disable-next-line divide-before-multiply
+        if (rounding_ == ROUND_UP && a_ != scaled_ * b_) {
+            scaled_ += 1;
+        }
+        return scaled_;
+    }
+
     /// Scale a fixed point decimal of some scale factor to 18 decimals.
     /// @param a_ Some fixed point decimal value.
     /// @param aDecimals_ The number of fixed decimals of `a_`.
@@ -95,7 +116,7 @@ library FixedPointDecimalScale {
             unchecked {
                 decimals_ = FIXED_POINT_DECIMALS - aDecimals_;
             }
-            a_ = a_ * (10 ** decimals_);
+            a_ = scaleUp(a_, decimals_);
         } else if (FIXED_POINT_DECIMALS < aDecimals_) {
             unchecked {
                 decimals_ = aDecimals_ - FIXED_POINT_DECIMALS;
@@ -165,26 +186,5 @@ library FixedPointDecimalScale {
             }
             return scaleDown(a_, scaleDownBy_, rounding_);
         }
-    }
-
-    /// Scales `a_` down by a specified number of decimals, rounding in the
-    /// specified direction. Used internally by several other functions in this
-    /// lib.
-    /// @param a_ The number to scale down.
-    /// @param scaleDownBy_ Number of orders of magnitude to scale `a_` down by.
-    /// Overflows if greater than 77.
-    /// @param rounding_ Rounding direction. Unknown values are treated as
-    /// rounding DOWN.
-    /// @return `a_` scaled down by `scaleDownBy_` and rounded.
-    function scaleDown(uint256 a_, uint256 scaleDownBy_, uint256 rounding_) internal pure returns (uint256) {
-        uint256 b_ = 10 ** scaleDownBy_;
-        uint256 scaled_ = a_ / b_;
-        // Intentionally doing a divide before multiply here to detect the need
-        // to round up.
-        //slither-disable-next-line divide-before-multiply
-        if (rounding_ == ROUND_UP && a_ != scaled_ * b_) {
-            scaled_ += 1;
-        }
-        return scaled_;
     }
 }
