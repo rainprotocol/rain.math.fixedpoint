@@ -140,7 +140,7 @@ library FixedPointDecimalScale {
     }
 
     /// Scale an 18 decimal fixed point value to some other scale.
-    /// Basically the inverse behaviour of `scale18`. Where `scale18` would scale
+    /// Exactly the inverse behaviour of `scale18`. Where `scale18` would scale
     /// up, `scaleN` scales down, and vice versa.
     /// @param a_ An 18 decimal fixed point number.
     /// @param targetDecimals_ The new scale of `a_`.
@@ -166,23 +166,6 @@ library FixedPointDecimalScale {
                 return a_;
             }
         }
-    }
-
-    /// Scale an 18 decimal fixed point ratio of a_:b_ according to the decimals
-    /// of a and b that each MAY NOT be 18.
-    /// i.e. a subsequent call to `a_.fixedPointMul(ratio_)` would yield the
-    /// value that it would have as though `a_` and `b_` were both 18 decimals
-    /// and we hadn't rescaled the ratio.
-    /// @param ratio_ The ratio to be scaled.
-    /// @param aDecimals_ The decimals of the ratio numerator.
-    /// @param bDecimals_ The decimals of the ratio denominator.
-    /// @param rounding_ Rounding direction.
-    function scaleRatio(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_)
-        internal
-        pure
-        returns (uint256)
-    {
-        return scaleBy(ratio_, int8(bDecimals_) - int8(aDecimals_), rounding_);
     }
 
     /// Scale a fixed point up or down by `scaleBy_` orders of magnitude.
@@ -217,5 +200,22 @@ library FixedPointDecimalScale {
                 return a_;
             }
         }
+    }
+
+    /// Scale an 18 decimal fixed point ratio of a_:b_ according to the decimals
+    /// of a and b that each MAY NOT be 18.
+    /// i.e. a subsequent call to `a_.fixedPointMul(ratio_)` would yield the
+    /// value that it would have as though `a_` and `b_` were both 18 decimals
+    /// and we hadn't rescaled the ratio.
+    /// @param ratio_ The ratio to be scaled.
+    /// @param aDecimals_ The decimals of the ratio numerator.
+    /// @param bDecimals_ The decimals of the ratio denominator.
+    /// @param rounding_ Rounding direction.
+    function scaleRatio(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_)
+        internal
+        pure
+        returns (uint256)
+    {
+        return scaleBy(ratio_, int8(bDecimals_) - int8(aDecimals_), rounding_);
     }
 }

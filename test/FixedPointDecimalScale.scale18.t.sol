@@ -19,7 +19,7 @@ contract FixedPointDecimalScaleTestScale18 is Test {
 
     function testScale1818(uint256 a_, uint256 flags_) public {
         vm.assume(flags_ <= FLAG_MAX_INT);
-        assertEq(a_, FixedPointDecimalScale.scale18(a_, 18, flags_));
+        assertEq(a_, FixedPointDecimalScale.scale18(a_, FIXED_POINT_DECIMALS, flags_));
     }
 
     function testScale18Lt(uint256 a_, uint256 decimals_, uint256 flags_) public {

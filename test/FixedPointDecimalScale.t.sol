@@ -44,39 +44,4 @@ contract FixedPointDecimalScaleTest is Test {
 //     vm.expectRevert(stdError.arithmeticError);
 //     FixedPointDecimalScale.scaleBy(a_, scaleBy_, rounding_);
 // }
-
-// function testScaleN18(uint256 a_, uint256 rounding_) public {
-//     assertEq(a_, FixedPointDecimalScale.scaleN(a_, 18, rounding_));
-// }
-
-// function testScaleNLt18(uint256 a_, uint8 targetDecimals_, uint256 rounding_) public {
-//     vm.assume(targetDecimals_ < 18);
-
-//     uint256 scaleDown_ = 18 - targetDecimals_;
-
-//     assertEq(
-//         FixedPointDecimalScale.scaleN(a_, targetDecimals_, rounding_),
-//         FixedPointDecimalScale.scaleDown(a_, scaleDown_, rounding_)
-//     );
-// }
-
-// function testScaleNGt18(uint256 a_, uint8 targetDecimals_, uint256 rounding_) public {
-//     vm.assume(targetDecimals_ > 18);
-
-//     uint256 scaleUp_ = targetDecimals_ - 18;
-//     vm.assume(!WillOverflow.scaleUpWillOverflow(a_, scaleUp_));
-
-//     assertEq(
-//         FixedPointDecimalScale.scaleN(a_, targetDecimals_, rounding_), FixedPointDecimalScale.scaleUp(a_, scaleUp_)
-//     );
-// }
-
-// function testScaleNGt18Overflow(uint256 a_, uint8 targetDecimals_, uint256 rounding_) public {
-//     vm.assume(targetDecimals_ > 18);
-
-//     uint256 scaleUp_ = targetDecimals_ - 18;
-//     vm.assume(WillOverflow.scaleUpWillOverflow(a_, scaleUp_));
-//     vm.expectRevert(stdError.arithmeticError);
-//     FixedPointDecimalScale.scaleN(a_, targetDecimals_, rounding_);
-// }
 }

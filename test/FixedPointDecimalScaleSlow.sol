@@ -75,4 +75,26 @@ library FixedPointDecimalScaleSlow {
 
         return a_;
     }
+
+    function scaleNSlow(uint256 a_, uint256 decimals_, uint256 flags_) internal pure returns (uint256) {
+        if (FIXED_POINT_DECIMALS > decimals_) {
+            uint256 scaleDownBy_ = FIXED_POINT_DECIMALS - decimals_;
+            if (flags_ & FLAG_ROUND_UP != 0) {
+                return scaleDownRoundUpSlow(a_, scaleDownBy_);
+            } else {
+                return scaleDownSlow(a_, scaleDownBy_);
+            }
+        }
+
+        if (decimals_ > FIXED_POINT_DECIMALS) {
+            uint256 scaleUpBy_ = decimals_ - FIXED_POINT_DECIMALS;
+            if (flags_ & FLAG_SATURATE != 0) {
+                return scaleUpSaturatingSlow(a_, scaleUpBy_);
+            } else {
+                return scaleUpSlow(a_, scaleUpBy_);
+            }
+        }
+
+        return a_;
+    }
 }

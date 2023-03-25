@@ -35,6 +35,14 @@ library WillOverflow {
         }
     }
 
+    function scaleNWillOverflow(uint256 a_, uint256 decimals_) internal pure returns (bool) {
+        if (decimals_ > FIXED_POINT_DECIMALS) {
+            return scaleUpWillOverflow(a_, decimals_ - FIXED_POINT_DECIMALS);
+        } else {
+            return false;
+        }
+    }
+
     function scaleRatioWillOverflow(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_) internal pure returns (bool) {
         if (18 + uint256(bDecimals_) < aDecimals_) {
             return true;
