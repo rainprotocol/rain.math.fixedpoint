@@ -48,25 +48,41 @@ library FixedPointDecimalScale {
         unchecked {
             b_ = 10 ** scaleUpBy_;
         }
+        b_ = a_ * b_;
+
         // We know exactly when 10 ** X overflows so replay the checked version
         // to get the standard Solidity overflow behaviour. The branching logic
         // here is still ~230 gas cheaper than unconditionally running the
         // overflow checks. We're optimising for standardisation rather than gas
         // in the unhappy revert case.
         if (scaleUpBy_ >= OVERFLOW_RESCALE_OOMS) {
-                10 ** scaleUpBy_;
+            10 ** scaleUpBy_;
         }
-        b_ = a_ * b_;
     }
 
     /// Identical to `scaleUp` but saturates instead of reverting on overflow.
+    /// Note that if `scaleUpBy_` exceeds `OVERFLOW_RESCALE_OOMS` then this WILL
+    /// still overflow.
     /// @param a_ As per `scaleUp`.
     /// @param scaleUpBy_ As per `scaleUp`.
-    /// @return As per `scaleUp` but saturates as `type(uint256).max` on
+    /// @return c_ As per `scaleUp` but saturates as `type(uint256).max` on
     /// overflow.
-    // function scaleUpSaturating(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256) {
+    function scaleUpSaturating(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256 c_) {
+        // Adapted from saturatingMath.
+        // Inlining everything here saves ~250-300+ gas relative to slow.
+        unchecked {
+            uint256 b_ = 10 ** scaleUpBy_;
+            c_ = a_ * b_;
+            // Checking b_ here allows us to skip an "is zero" check because even
+            // 10 ** 0 = 1, so we have a positive lower bound on b_.
+            c_ = c_ / b_ != a_ ? type(uint256).max : c_;
+        }
 
-    // }
+        // Same overflow replay `scaleUp`
+        if (scaleUpBy_ >= OVERFLOW_RESCALE_OOMS) {
+            10 ** scaleUpBy_;
+        }
+    }
 
     /// Scale a fixed point decimal of some scale factor to 18 decimals.
     /// @param a_ Some fixed point decimal value.
