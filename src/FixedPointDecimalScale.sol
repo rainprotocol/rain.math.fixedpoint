@@ -176,11 +176,10 @@ library FixedPointDecimalScale {
     /// @param rounding_ Rounding direction.
     /// @return `a_` rescaled according to `scaleBy_`.
     function scaleBy(uint256 a_, int8 scaleBy_, uint256 rounding_) internal pure returns (uint256) {
-        if (scaleBy_ == 0) {
-            return a_;
-        } else if (scaleBy_ > 0) {
+        if (scaleBy_ > 0) {
             return scaleUp(a_, uint8(scaleBy_));
-        } else {
+        }
+        else if (scaleBy_ < 0) {
             unchecked {
                 // We know that scaleBy_ is negative here, so we can convert it
                 // to an absolute value with bitwise NOT + 1.
@@ -188,6 +187,9 @@ library FixedPointDecimalScale {
                 // casting it, and handles the case of -128 without overflow.
                 return scaleDown(a_, uint8(~scaleBy_) + 1, rounding_);
             }
+        }
+        else {
+            return a_;
         }
     }
 }
