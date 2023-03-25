@@ -127,24 +127,25 @@ library FixedPointDecimalScale {
     }
 
     /// Scale an 18 decimal fixed point value to some other scale.
+    /// Basically the inverse behaviour of `scale18`. Where `scale18` would scale
+    /// up, `scaleN` scales down, and vice versa.
     /// @param a_ An 18 decimal fixed point number.
     /// @param targetDecimals_ The new scale of `a_`.
     /// @param rounding_ Rounding direction.
     /// @return `a_` rescaled from 18 to `targetDecimals_`.
     function scaleN(uint256 a_, uint256 targetDecimals_, uint256 rounding_) internal pure returns (uint256) {
-        uint256 decimals_;
-        if (targetDecimals_ == FIXED_POINT_DECIMALS) {
+        if (FIXED_POINT_DECIMALS > targetDecimals_) {
+            unchecked {
+                return scaleDown(a_, FIXED_POINT_DECIMALS - targetDecimals_, rounding_);
+            }
+        }
+        else if (targetDecimals_ > FIXED_POINT_DECIMALS) {
+            unchecked {
+                return scaleUp(a_, targetDecimals_ - FIXED_POINT_DECIMALS);
+            }
+        }
+        else {
             return a_;
-        } else if (FIXED_POINT_DECIMALS > targetDecimals_) {
-            unchecked {
-                decimals_ = FIXED_POINT_DECIMALS - targetDecimals_;
-            }
-            return scaleDown(a_, decimals_, rounding_);
-        } else {
-            unchecked {
-                decimals_ = targetDecimals_ - FIXED_POINT_DECIMALS;
-            }
-            return scaleUp(a_, decimals_);
         }
     }
 
