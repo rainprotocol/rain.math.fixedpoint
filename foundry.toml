@@ -12,7 +12,7 @@ optimizer_runs = 100000
 fuzz.runs = 2056
 
 [profile.default.model_checker]
-contracts = {'src/LibFixedPointScale.sol' = ['LibFixedPointScale']}
+contracts = {'src/FixedPointDecimalScale.sol' = ['FixedPointDecimalScale']}
 engine = 'chc'
 timeout = 10000
 targets = ['assert', 'underflow', 'overflow', 'divByZero', 'constantCondition', 'popEmptyArray', 'outOfBounds']

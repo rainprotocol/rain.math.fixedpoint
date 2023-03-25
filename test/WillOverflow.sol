@@ -15,10 +15,6 @@ library WillOverflow {
         }
     }
 
-    function scaleDownWillOverflow(uint256 scaleDownBy_) internal pure returns (bool) {
-        return scaleDownBy_ >= OVERFLOW_RESCALE_OOMS;
-    }
-
     function scaleDownWillRound(uint256 a_, uint256 scaleDownBy_) internal pure returns (bool) {
         uint256 b_ = 10 ** scaleDownBy_;
         uint256 c_ = a_ / b_;
@@ -26,21 +22,17 @@ library WillOverflow {
     }
 
     function scale18WillOverflow(uint256 a_, uint256 decimals_) internal pure returns (bool) {
-        if (decimals_ == FIXED_POINT_DECIMALS) {
-            return false;
-        }
-
-        if (decimals_ > FIXED_POINT_DECIMALS) {
-            return scaleDownWillOverflow(decimals_ - FIXED_POINT_DECIMALS);
-        }
-
         if (decimals_ < FIXED_POINT_DECIMALS) {
             return scaleUpWillOverflow(a_, FIXED_POINT_DECIMALS - decimals_);
         }
+        else {
+            return false;
+        }
     }
 
-    function scaleRatioWillOverflow(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_)
+    function scaleRatioWillOverflow(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_)
         internal
+        pure
         returns (bool)
     {
         if (18 + uint256(bDecimals_) < aDecimals_) {
@@ -51,21 +43,11 @@ library WillOverflow {
             return true;
         }
 
-        // I think this is more a limit of the fuzz test than the underlying.
-        // @todo relax this constraint somehow.
-        if (scaleDownWillOverflow(bDecimals_)) {
-            return true;
-        }
-
         int8 diff_ = int8(bDecimals_) - int8(aDecimals_);
-        if (diff_ == 0) {
-            return false;
-        } else if (diff_ > 0) {
+        if (diff_ > 0) {
             return scaleUpWillOverflow(ratio_, uint8(diff_));
         } else {
-            // Don't have forge stdMath.abs in a library, need to convert the
-            // negative diff ourselves bitwise.
-            return scaleDownWillOverflow(uint8(~diff_) + 1);
+            return false;
         }
     }
 }

@@ -22,22 +22,49 @@ library FixedPointDecimalScaleSlow {
     }
 
     function scaleDownSlow(uint256 a_, uint256 scaleDownBy_) internal pure returns (uint256) {
-        uint256 b_ = 10 ** scaleDownBy_;
-        uint256 scaled_ = a_ / b_;
-        return scaled_;
+        if (scaleDownBy_ >= OVERFLOW_RESCALE_OOMS) {
+            return 0;
+        }
+        return a_ / (10 ** scaleDownBy_);
     }
 
-    function scale18Slow(uint256 a_, uint256 decimals_, uint256 rounding_) internal pure returns (uint256) {
+    function scaleDownRoundUpSlow(uint256 a_, uint256 scaleDownBy_) internal pure returns (uint256) {
+        if (scaleDownBy_ >= OVERFLOW_RESCALE_OOMS) {
+            if (a_ == 0) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+        uint256 b_ = (10 ** scaleDownBy_);
+        uint256 c_ = a_ / b_;
+        if (c_ * b_ != a_) {
+            c_ += 1;
+        }
+        return c_;
+    }
+
+    function scale18Slow(uint256 a_, uint256 decimals_, uint256 flags_) internal pure returns (uint256) {
         if (FIXED_POINT_DECIMALS == decimals_) {
             return a_;
         }
 
         if (FIXED_POINT_DECIMALS > decimals_) {
-            return scaleUpSlow(a_, FIXED_POINT_DECIMALS - decimals_);
+            uint256 scaleUpBy_ = FIXED_POINT_DECIMALS - decimals_;
+            if (flags_ & FLAG_SATURATE != 0) {
+                return scaleUpSaturatingSlow(a_, scaleUpBy_);
+            } else {
+                return scaleUpSlow(a_, scaleUpBy_);
+            }
         }
 
         if (decimals_ > FIXED_POINT_DECIMALS) {
-            return scaleDownSlow(a_, decimals_ - FIXED_POINT_DECIMALS, rounding_);
+            uint256 scaleDownBy_ = decimals_ - FIXED_POINT_DECIMALS;
+            if (flags_ & FLAG_ROUND_UP != 0) {
+                return scaleDownRoundUpSlow(a_, scaleDownBy_);
+            } else {
+                return scaleDownSlow(a_, scaleDownBy_);
+            }
         }
     }
 }

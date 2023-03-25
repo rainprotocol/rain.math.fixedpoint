@@ -29,31 +29,31 @@ contract FixedPointDecimalScaleTestScaleUpSaturating is Test {
         );
     }
 
-    function testScaleUpSaturatingGas0() public {
+    function testScaleUpSaturatingGas0() public pure {
         FixedPointDecimalScale.scaleUpSaturating(123, 5);
     }
 
-    function testScaleUpSaturatingGas1() public {
+    function testScaleUpSaturatingGas1() public pure {
         FixedPointDecimalScale.scaleUpSaturating(0, 7);
     }
 
     // This hits saturation
-    function testScaleUpSaturatingGas2() public {
+    function testScaleUpSaturatingGas2() public pure {
         FixedPointDecimalScale.scaleUpSaturating(
             11579208924889540434846052544353396039762338070540290210999787421892, 11
         );
     }
 
-    function testScaleUpSaturatingSlowGas0() public {
+    function testScaleUpSaturatingSlowGas0() public pure {
         FixedPointDecimalScaleSlow.scaleUpSaturatingSlow(123, 5);
     }
 
-    function testScaleUpSaturatingSlowGas1() public {
+    function testScaleUpSaturatingSlowGas1() public pure {
         FixedPointDecimalScaleSlow.scaleUpSaturatingSlow(0, 7);
     }
 
     // This hits saturation
-    function testScaleUpSaturatingSlowGas2() public {
+    function testScaleUpSaturatingSlowGas2() public pure {
         FixedPointDecimalScaleSlow.scaleUpSaturatingSlow(
             11579208924889540434846052544353396039762338070540290210999787421892, 11
         );
