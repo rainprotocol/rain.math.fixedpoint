@@ -23,14 +23,27 @@ contract FixedPointDecimalScaleTestScaleDown is Test {
         );
     }
 
+    function testScaleDownRoundDiff(uint256 a_, uint8 scaleDownBy_) public {
+        vm.assume(WillOverflow.scaleDownWillRound(a_, scaleDownBy_));
+
+        assertEq(
+            FixedPointDecimalScale.scaleDown(a_, scaleDownBy_) + 1,
+            FixedPointDecimalScale.scaleDownRoundUp(a_, scaleDownBy_)
+        );
+    }
+
     function testScaleDownOverflow(uint256 a_, uint256 scaleDownBy_) public {
         vm.assume(scaleDownBy_ >= OVERFLOW_RESCALE_OOMS);
 
         assertEq(0, FixedPointDecimalScale.scaleDown(a_, scaleDownBy_));
     }
 
-    function testScaleDown0(uint256 a_) public {
+    function testScaleDownBy0(uint256 a_) public {
         assertEq(a_, FixedPointDecimalScale.scaleDown(a_, 0));
+    }
+
+    function testScaleDown0(uint256 scaleDownBy_) public {
+        assertEq(0, FixedPointDecimalScale.scaleDown(0, scaleDownBy_));
     }
 
     function testScaleDownGas0() public {

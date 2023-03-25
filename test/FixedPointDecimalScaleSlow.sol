@@ -21,6 +21,13 @@ library FixedPointDecimalScaleSlow {
     }
 
     function scaleUpSaturatingSlow(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256) {
+        if (scaleUpBy_ >= OVERFLOW_RESCALE_OOMS) {
+            if (a_ == 0) {
+                return 0;
+            } else {
+                return type(uint256).max;
+            }
+        }
         return SaturatingMath.saturatingMul(a_, 10 ** scaleUpBy_);
     }
 

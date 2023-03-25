@@ -8,13 +8,15 @@ import "./FixedPointDecimalScaleSlow.sol";
 
 contract FixedPointDecimalScaleTestScaleUpSaturating is Test {
     // Special case for scale = 0 is that input = output.
-    function testScaleUpSaturating0(uint256 a_) public {
+    function testScaleUpSaturatingBy0(uint256 a_) public {
         assertEq(a_, FixedPointDecimalScale.scaleUpSaturating(a_, 0));
     }
 
-    function testScaleUpSaturating(uint256 a_, uint8 scaleUpBy_) public {
-        vm.assume(scaleUpBy_ < OVERFLOW_RESCALE_OOMS);
+    function testScaleUpSaturating0(uint256 scaleUpBy_) public {
+        assertEq(0, FixedPointDecimalScale.scaleUpSaturating(0, scaleUpBy_));
+    }
 
+    function testScaleUpSaturatingReferenceImplementation(uint256 a_, uint8 scaleUpBy_) public {
         assertEq(
             FixedPointDecimalScaleSlow.scaleUpSaturatingSlow(a_, scaleUpBy_),
             FixedPointDecimalScale.scaleUpSaturating(a_, scaleUpBy_)
@@ -27,6 +29,12 @@ contract FixedPointDecimalScaleTestScaleUpSaturating is Test {
         assertEq(
             FixedPointDecimalScale.scaleUp(a_, scaleUpBy_), FixedPointDecimalScale.scaleUpSaturating(a_, scaleUpBy_)
         );
+    }
+
+    function testScaleUpSaturatingSaturates(uint256 a_, uint8 scaleUpBy_) public {
+        vm.assume(WillOverflow.scaleUpWillOverflow(a_, scaleUpBy_));
+
+        assertEq(type(uint256).max, FixedPointDecimalScale.scaleUpSaturating(a_, scaleUpBy_));
     }
 
     function testScaleUpSaturatingGas0() public pure {

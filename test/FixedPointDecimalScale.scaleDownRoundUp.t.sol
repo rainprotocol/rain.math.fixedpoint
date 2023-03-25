@@ -14,13 +14,11 @@ contract FixedPointDecimalScaleTestScaleDown is Test {
         );
     }
 
-    function testScaleDownRoundUpNoRound(uint256 a_, uint8 scaleDownBy_) public {
-        vm.assume(!WillOverflow.scaleDownWillRound(a_, scaleDownBy_));
+    function testScaleDownRoundUpOverflow(uint256 a_, uint256 scaleDownBy_) public {
+        vm.assume(a_ > 0);
+        vm.assume(scaleDownBy_ >= OVERFLOW_RESCALE_OOMS);
 
-        assertEq(
-            FixedPointDecimalScale.scaleDownRoundUp(a_, scaleDownBy_),
-            FixedPointDecimalScale.scaleDown(a_, scaleDownBy_)
-        );
+        assertEq(1, FixedPointDecimalScale.scaleDownRoundUp(a_, scaleDownBy_));
     }
 
     function testScaleDownRoundUpOverflow0(uint256 scaleDownBy_) public {
@@ -29,11 +27,12 @@ contract FixedPointDecimalScaleTestScaleDown is Test {
         assertEq(0, FixedPointDecimalScale.scaleDownRoundUp(0, scaleDownBy_));
     }
 
-    function testScaleDownRoundUpOverflow(uint256 a_, uint256 scaleDownBy_) public {
-        vm.assume(a_ > 0);
-        vm.assume(scaleDownBy_ >= OVERFLOW_RESCALE_OOMS);
+    function testScaleDownBy0(uint256 a_) public {
+        assertEq(a_, FixedPointDecimalScale.scaleDownRoundUp(a_, 0));
+    }
 
-        assertEq(1, FixedPointDecimalScale.scaleDownRoundUp(a_, scaleDownBy_));
+    function testScaleDown0(uint256 scaleDownBy_) public {
+        assertEq(0, FixedPointDecimalScale.scaleDownRoundUp(0, scaleDownBy_));
     }
 
     function testScaleDownRoundUpGas1() public pure {
