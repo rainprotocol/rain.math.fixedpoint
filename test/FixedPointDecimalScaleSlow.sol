@@ -14,6 +14,9 @@ import "../src/FixedPointDecimalConstants.sol";
 /// fast version MAY be identical.
 library FixedPointDecimalScaleSlow {
     function scaleUpSlow(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256) {
+        if (a_ == 0) {
+            return 0;
+        }
         return a_ * (10 ** scaleUpBy_);
     }
 

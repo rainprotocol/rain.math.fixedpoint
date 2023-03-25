@@ -6,6 +6,9 @@ import "../src/FixedPointDecimalConstants.sol";
 library WillOverflow {
     function scaleUpWillOverflow(uint256 a_, uint256 scaleBy_) internal pure returns (bool) {
         unchecked {
+            if (a_ == 0) {
+                return false;
+            }
             if (scaleBy_ >= OVERFLOW_RESCALE_OOMS) {
                 return true;
             }

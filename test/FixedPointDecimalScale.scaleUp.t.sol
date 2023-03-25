@@ -24,7 +24,6 @@ contract FixedPointDecimalScaleTestScaleUp is Test {
     }
 
     function testScaleUpOverflow(uint256 a_, uint8 scaleUpBy_) public {
-        vm.assume(a_ > 0);
         vm.assume(WillOverflow.scaleUpWillOverflow(a_, scaleUpBy_));
 
         vm.expectRevert(stdError.arithmeticError);
