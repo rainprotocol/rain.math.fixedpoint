@@ -123,7 +123,7 @@ library FixedPointDecimalScale {
             unchecked {
                 decimals_ = targetDecimals_ - FIXED_POINT_DECIMALS;
             }
-            return a_ * (10 ** decimals_);
+            return scaleUp(a_, decimals_);
         }
     }
 
@@ -157,7 +157,7 @@ library FixedPointDecimalScale {
         if (scaleBy_ == 0) {
             return a_;
         } else if (scaleBy_ > 0) {
-            return a_ * (10 ** uint8(scaleBy_));
+            return scaleUp(a_, uint8(scaleBy_));
         } else {
             uint256 scaleDownBy_;
             unchecked {
