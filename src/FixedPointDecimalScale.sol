@@ -92,21 +92,27 @@ library FixedPointDecimalScale {
     /// Overflows if greater than 77.
     /// @param rounding_ Rounding direction. Unknown values are treated as
     /// rounding DOWN.
-    /// @return `a_` scaled down by `scaleDownBy_` and rounded.
-    function scaleDown(uint256 a_, uint256 scaleDownBy_, uint256 rounding_) internal pure returns (uint256) {
-        uint256 b_ = 10 ** scaleDownBy_;
-        uint256 scaled_ = a_ / b_;
+    /// @return c_ `a_` scaled down by `scaleDownBy_` and rounded.
+    function scaleDown(uint256 a_, uint256 scaleDownBy_, uint256 rounding_) internal pure returns (uint256 c_) {
+        uint256 b_;
+        unchecked {
+            b_ = 10 ** scaleDownBy_;
+        }
+
+        // Replay overflow.
+        if (scaleDownBy_ >= OVERFLOW_RESCALE_OOMS) {
+            10 ** scaleDownBy_;
+        }
 
         unchecked {
+            c_ = a_ / b_;
             // Intentionally doing a divide before multiply here to detect the need
             // to round up.
             //slither-disable-next-line divide-before-multiply
-            if (rounding_ == ROUND_UP && a_ != scaled_ * b_) {
-                scaled_ += 1;
+            if (rounding_ == ROUND_UP && a_ != c_ * b_) {
+                c_ += 1;
             }
         }
-
-        return scaled_;
     }
 
     /// Scale a fixed point decimal of some scale factor to 18 decimals.
