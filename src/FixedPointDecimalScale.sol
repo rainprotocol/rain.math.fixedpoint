@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: CAL
 pragma solidity ^0.8.18;
 
-import "./FixedPointConstants.sol";
+import "./FixedPointDecimalConstants.sol";
 
-/// @title LibFixedPointScale
+/// @title FixedPointDecimalScale
 /// @notice Tools to scale unsigned values to/from 18 decimal fixed point
 /// representation.
 ///
@@ -37,7 +37,7 @@ import "./FixedPointConstants.sol";
 /// assume that an active participant, e.g. `msg.sender`, knowns something we
 /// don't and is carefully crafting an attack, so we are most conservative and
 /// suspicious of their inputs and actions.
-library LibFixedPointScale {
+library FixedPointDecimalScale {
     /// Scales `a_` up by a specified number of decimals.
     /// @param a_ The number to scale up.
     /// @param scaleUpBy_ Number of orders of magnitude to scale `b_` up by.
@@ -150,6 +150,4 @@ library LibFixedPointScale {
         }
         return scaled_;
     }
-
-
 }

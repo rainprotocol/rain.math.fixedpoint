@@ -1,19 +1,24 @@
 // SPDX-License-Identifier: CAL
 pragma solidity ^0.8.18;
 
-import "../src/FixedPointConstants.sol";
+import "rain.math.saturating/SaturatingMath.sol";
+import "../src/FixedPointDecimalConstants.sol";
 
-/// @title LibFixedPointScaleSlow
+/// @title FixedPointDecimalScaleSlow
 /// @notice Slow but more obviously correct versions of all functions in
-/// LibFixedPointScale.
+/// FixedPointScale.
 ///
 /// Generally the functions here are slower because they include more jumps
 /// because they are DRY. However, scaling values can easily be on a hot gas path
 /// so we MAY inline a lot of the logic which makes them WETter. The slow and
 /// fast version MAY be identical.
-library LibFixedPointScaleSlow {
+library FixedPointDecimalScaleSlow {
     function scaleUpSlow(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256) {
         return a_ * (10 ** scaleUpBy_);
+    }
+
+    function scaleUpSaturatingSlow(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256) {
+        return SaturatingMath.saturatingMul(a_, 10 ** scaleUpBy_);
     }
 
     function scaleDownSlow(uint256 a_, uint256 scaleDownBy_, uint256 rounding_) internal pure returns (uint256) {

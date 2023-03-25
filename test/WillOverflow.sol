@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: CAL
 pragma solidity ^0.8.18;
 
-import "../src/FixedPointConstants.sol";
+import "../src/FixedPointDecimalConstants.sol";
 
-library LibWillOverflow {
+library WillOverflow {
     function scaleUpWillOverflow(uint256 a_, uint256 scaleBy_) internal pure returns (bool) {
         unchecked {
             if (scaleBy_ > MAX_RESCALE_OOMS) {
@@ -46,11 +46,9 @@ library LibWillOverflow {
         int8 diff_ = int8(bDecimals_) - int8(aDecimals_);
         if (diff_ == 0) {
             return false;
-        }
-        else if (diff_ > 0) {
+        } else if (diff_ > 0) {
             return scaleUpWillOverflow(ratio_, uint8(diff_));
-        }
-        else {
+        } else {
             // Don't have forge stdMath.abs in a library, need to convert the
             // negative diff ourselves bitwise.
             return scaleDownWillOverflow(uint8(~diff_) + 1);
