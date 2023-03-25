@@ -64,7 +64,31 @@ contract FixedPointDecimalScaleTestScaleDown is Test {
         FixedPointDecimalScale.scaleDown(0, 13, ROUND_DOWN);
     }
 
+    function testScaleDownGas1() public {
+        FixedPointDecimalScale.scaleDown(0, 13, ROUND_UP);
+    }
+
+    function testScaleDownGas2() public {
+        FixedPointDecimalScale.scaleDown(0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_DOWN);
+    }
+
+    function testScaleDownGas3() public {
+        FixedPointDecimalScale.scaleDown(0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_UP);
+    }
+
     function testScaleDownGasSlow0() public {
         FixedPointDecimalScaleSlow.scaleDownSlow(0, 13, ROUND_DOWN);
+    }
+
+    function testScaleDownGasSlow1() public {
+        FixedPointDecimalScaleSlow.scaleDownSlow(0, 13, ROUND_UP);
+    }
+
+    function testScaleDownGasSlow2() public {
+        FixedPointDecimalScaleSlow.scaleDownSlow(0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_DOWN);
+    }
+
+    function testScaleDownGasSlow3() public {
+        FixedPointDecimalScaleSlow.scaleDownSlow(0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_UP);
     }
 }
