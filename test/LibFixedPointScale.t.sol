@@ -199,12 +199,6 @@ contract LibFixedPointScaleTest is Test {
         LibFixedPointScale.scale18(a_, aDecimals_, rounding_);
     }
 
-    function testScaleRatioExamples() public {
-        assertEq(LibFixedPointScale.scaleRatio(1e18, 6, 18, 0), 1e30);
-
-        assertEq(LibFixedPointScale.scaleRatio(1e18, 18, 6, 0), 1e6);
-    }
-
     function scaleRatioWillOverflow(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_)
         internal
         returns (bool)
@@ -238,6 +232,20 @@ contract LibFixedPointScaleTest is Test {
             LibFixedPointScale.scaleRatio(ratio_, aDecimals_, bDecimals_, rounding_),
             LibFixedPointScale.scaleDown(ratio_ * (10 ** (18 + bDecimals_ - aDecimals_)), 18, rounding_)
         );
+    }
+
+    // Ported from legacy tests.
+    function testScaleRatioExamples() public {
+        assertEq(LibFixedPointScale.scaleRatio(1e18, 6, 18, ROUND_DOWN), 1e30);
+        assertEq(LibFixedPointScale.scaleRatio(1e18, 18, 6, ROUND_DOWN), 1e6);
+        assertEq(LibFixedPointScale.scaleRatio(1_00000_00000_00367589, 12, 10, ROUND_UP), 1_00000_00000_003676);
+        assertEq(LibFixedPointScale.scaleRatio(1_00000_00000_00367589, 10, 12, ROUND_UP), 1_00000_00000_00367589_00);
+        assertEq(LibFixedPointScale.scaleRatio(1_00000_00000_00367589, 12, 12, ROUND_UP), 1_00000_00000_00367589);
+        assertEq(LibFixedPointScale.scaleRatio(1_00000_00000_00367589, 12, 10, ROUND_DOWN), 1_00000_00000_003675);
+        assertEq(LibFixedPointScale.scaleRatio(1_00000_00000_00367589, 10, 12, ROUND_DOWN), 1_00000_00000_00367589_00);
+        assertEq(LibFixedPointScale.scaleRatio(1_00000_00000_00367589, 12, 12, ROUND_DOWN), 1_00000_00000_00367589);
+        assertEq(LibFixedPointScale.scaleRatio(1_00000_00000_00367589, 18, 0, ROUND_DOWN), 1);
+        assertEq(LibFixedPointScale.scaleRatio(1_00000_00000_00367589, 0, 18, ROUND_DOWN), 1_00000_00000_00367589_000000_000000_000000);
     }
 
     // @todo This DOES NOT reliably overflow because the `scaleRatioWillOverflow`
