@@ -41,7 +41,7 @@ contract FixedPointDecimalScaleTest is Test {
     }
 
     function testScaleDownOverflow(uint256 a_, uint256 scaleDownBy_, uint256 rounding_) public {
-        vm.assume(scaleDownBy_ > MAX_RESCALE_OOMS);
+        vm.assume(scaleDownBy_ >= OVERFLOW_RESCALE_OOMS);
 
         vm.expectRevert(stdError.arithmeticError);
         FixedPointDecimalScale.scaleDown(a_, scaleDownBy_, rounding_);
@@ -74,7 +74,7 @@ contract FixedPointDecimalScaleTest is Test {
 
     function testScaleByDown(uint256 a_, int8 scaleBy_, uint256 rounding_) public {
         vm.assume(scaleBy_ < 0);
-        vm.assume(stdMath.abs(scaleBy_) <= MAX_RESCALE_OOMS);
+        vm.assume(stdMath.abs(scaleBy_) < OVERFLOW_RESCALE_OOMS);
 
         assertEq(
             FixedPointDecimalScale.scaleBy(a_, scaleBy_, rounding_),
@@ -83,7 +83,7 @@ contract FixedPointDecimalScaleTest is Test {
     }
 
     function testScaleByOverflow(uint256 a_, int8 scaleBy_, uint256 rounding_) public {
-        vm.assume(stdMath.abs(scaleBy_) > MAX_RESCALE_OOMS);
+        vm.assume(stdMath.abs(scaleBy_) >= OVERFLOW_RESCALE_OOMS);
 
         vm.expectRevert(stdError.arithmeticError);
         FixedPointDecimalScale.scaleBy(a_, scaleBy_, rounding_);

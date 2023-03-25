@@ -18,6 +18,9 @@ contract FixedPointDecimalScaleTestScaleUp is Test {
 
         vm.expectRevert(stdError.arithmeticError);
         FixedPointDecimalScale.scaleUp(a_, scaleUpBy_);
+
+        vm.expectRevert(stdError.arithmeticError);
+        FixedPointDecimalScale.scaleUp(a_, OVERFLOW_RESCALE_OOMS);
     }
 
     function testScaleUpGas0() public {

@@ -6,7 +6,7 @@ import "../src/FixedPointDecimalConstants.sol";
 library WillOverflow {
     function scaleUpWillOverflow(uint256 a_, uint256 scaleBy_) internal pure returns (bool) {
         unchecked {
-            if (scaleBy_ > MAX_RESCALE_OOMS) {
+            if (scaleBy_ >= OVERFLOW_RESCALE_OOMS) {
                 return true;
             }
             uint256 b_ = 10 ** scaleBy_;
@@ -16,7 +16,7 @@ library WillOverflow {
     }
 
     function scaleDownWillOverflow(uint256 scaleDownBy_) internal pure returns (bool) {
-        return scaleDownBy_ > MAX_RESCALE_OOMS;
+        return scaleDownBy_ >= OVERFLOW_RESCALE_OOMS;
     }
 
     function scaleDownWillRound(uint256 a_, uint256 scaleDownBy_) internal pure returns (bool) {

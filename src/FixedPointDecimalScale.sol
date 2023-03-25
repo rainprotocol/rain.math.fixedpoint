@@ -42,10 +42,31 @@ library FixedPointDecimalScale {
     /// @param a_ The number to scale up.
     /// @param scaleUpBy_ Number of orders of magnitude to scale `b_` up by.
     /// Errors if overflows.
-    /// @return `a_` scaled up by `scaleUpBy_`.
-    function scaleUp(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256) {
-        return a_ * (10 ** scaleUpBy_);
+    /// @return b_ `a_` scaled up by `scaleUpBy_`.
+    function scaleUp(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256 b_) {
+        // Checked power is expensive so don't do that.
+        unchecked {
+            b_ = 10 ** scaleUpBy_;
+        }
+        // We know exactly when 10 ** X overflows so replay the checked version
+        // to get the standard Solidity overflow behaviour. The branching logic
+        // here is still ~230 gas cheaper than unconditionally running the
+        // overflow checks. We're optimising for standardisation rather than gas
+        // in the unhappy revert case.
+        if (scaleUpBy_ >= OVERFLOW_RESCALE_OOMS) {
+                10 ** scaleUpBy_;
+        }
+        b_ = a_ * b_;
     }
+
+    /// Identical to `scaleUp` but saturates instead of reverting on overflow.
+    /// @param a_ As per `scaleUp`.
+    /// @param scaleUpBy_ As per `scaleUp`.
+    /// @return As per `scaleUp` but saturates as `type(uint256).max` on
+    /// overflow.
+    // function scaleUpSaturating(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256) {
+
+    // }
 
     /// Scale a fixed point decimal of some scale factor to 18 decimals.
     /// @param a_ Some fixed point decimal value.
