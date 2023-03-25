@@ -8,8 +8,13 @@ import "./FixedPointDecimalScaleSlow.sol";
 
 contract FixedPointDecimalScaleTestScaleUp is Test {
     // Special case for scale = 0 is that input = output.
-    function testScaleUp0(uint256 a_) public {
+    function testScaleUpBy0(uint256 a_) public {
         assertEq(a_, FixedPointDecimalScale.scaleUp(a_, 0));
+    }
+
+    function testScaleUp0(uint256 scaleUpBy_) public {
+        // scaling up 0 will never overflow.
+        assertEq(0, FixedPointDecimalScale.scaleUp(0, scaleUpBy_));
     }
 
     function testScaleUp(uint256 a_, uint8 scaleUpBy_) public {
@@ -19,11 +24,15 @@ contract FixedPointDecimalScaleTestScaleUp is Test {
     }
 
     function testScaleUpOverflow(uint256 a_, uint8 scaleUpBy_) public {
+        vm.assume(a_ > 0);
         vm.assume(WillOverflow.scaleUpWillOverflow(a_, scaleUpBy_));
 
         vm.expectRevert(stdError.arithmeticError);
         FixedPointDecimalScale.scaleUp(a_, scaleUpBy_);
+    }
 
+    function testScaleUpOverflowBoundary(uint256 a_) public {
+        vm.assume(a_ > 0);
         vm.expectRevert(stdError.arithmeticError);
         FixedPointDecimalScale.scaleUp(a_, OVERFLOW_RESCALE_OOMS);
     }
@@ -36,19 +45,19 @@ contract FixedPointDecimalScaleTestScaleUp is Test {
         );
     }
 
-    function testScaleUpGas0() public {
+    function testScaleUpGas0() public pure {
         FixedPointDecimalScale.scaleUp(123, 5);
     }
 
-    function testScaleUpGas1() public {
+    function testScaleUpGas1() public pure {
         FixedPointDecimalScale.scaleUp(0, 7);
     }
 
-    function testScaleUpSlowGas0() public {
+    function testScaleUpSlowGas0() public pure {
         FixedPointDecimalScaleSlow.scaleUpSlow(123, 5);
     }
 
-    function testScaleUpSlowGas1() public {
+    function testScaleUpSlowGas1() public pure {
         FixedPointDecimalScaleSlow.scaleUpSlow(0, 7);
     }
 }

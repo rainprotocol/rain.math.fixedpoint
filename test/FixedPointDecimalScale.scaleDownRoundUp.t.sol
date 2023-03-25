@@ -36,19 +36,19 @@ contract FixedPointDecimalScaleTestScaleDown is Test {
         assertEq(1, FixedPointDecimalScale.scaleDownRoundUp(a_, scaleDownBy_));
     }
 
-    function testScaleDownRoundUpGas1() public {
+    function testScaleDownRoundUpGas1() public pure {
         FixedPointDecimalScale.scaleDownRoundUp(0, 13);
     }
 
-    function testScaleDownRoundUpGas3() public {
+    function testScaleDownRoundUpGas3() public pure {
         FixedPointDecimalScale.scaleDownRoundUp(0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13);
     }
 
-    function testScaleDownRoundUpGasSlow1() public {
+    function testScaleDownRoundUpGasSlow1() public pure {
         FixedPointDecimalScaleSlow.scaleDownRoundUpSlow(0, 13);
     }
 
-    function testScaleDownRoundUpGasSlow3() public {
+    function testScaleDownRoundUpGasSlow3() public pure {
         FixedPointDecimalScaleSlow.scaleDownRoundUpSlow(
             0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13
         );

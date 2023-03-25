@@ -56,7 +56,7 @@ library FixedPointDecimalScale {
         // overflow checks. We're optimising for standardisation rather than gas
         // in the unhappy revert case.
         if (scaleUpBy_ >= OVERFLOW_RESCALE_OOMS) {
-            10 ** scaleUpBy_;
+            b_ = a_ == 0 ? 0 : 10 ** scaleUpBy_;
         }
     }
 
@@ -88,16 +88,16 @@ library FixedPointDecimalScale {
     /// @param scaleDownBy_ Number of orders of magnitude to scale `a_` down by.
     /// Overflows if greater than 77.
     /// @return c_ `a_` scaled down by `scaleDownBy_` and rounded.
-    function scaleDown(uint256 a_, uint256 scaleDownBy_) internal pure returns (uint256 c_) {
+    function scaleDown(uint256 a_, uint256 scaleDownBy_) internal pure returns (uint256) {
         unchecked {
-            c_ = scaleDownBy_ >= OVERFLOW_RESCALE_OOMS ? 0 : a_ / (10 ** scaleDownBy_);
+            return scaleDownBy_ >= OVERFLOW_RESCALE_OOMS ? 0 : a_ / (10 ** scaleDownBy_);
         }
     }
 
     function scaleDownRoundUp(uint256 a_, uint256 scaleDownBy_) internal pure returns (uint256 c_) {
         unchecked {
             if (scaleDownBy_ >= OVERFLOW_RESCALE_OOMS) {
-                c_ = 0;
+                c_ = a_ == 0 ? 0 : 1;
             } else {
                 uint256 b_ = 10 ** scaleDownBy_;
                 c_ = a_ / b_;
