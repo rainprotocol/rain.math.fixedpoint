@@ -7,7 +7,6 @@ import "../src/FixedPointDecimalConstants.sol";
 import "../src/FixedPointDecimalScale.sol";
 
 contract FixedPointDecimalScaleTest is Test {
-
     function testScaleBy0(uint256 a_, uint256 rounding_) public {
         assertEq(a_, FixedPointDecimalScale.scaleBy(a_, 0, rounding_));
     }

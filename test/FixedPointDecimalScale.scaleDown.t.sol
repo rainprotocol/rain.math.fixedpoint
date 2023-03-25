@@ -69,11 +69,15 @@ contract FixedPointDecimalScaleTestScaleDown is Test {
     }
 
     function testScaleDownGas2() public {
-        FixedPointDecimalScale.scaleDown(0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_DOWN);
+        FixedPointDecimalScale.scaleDown(
+            0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_DOWN
+        );
     }
 
     function testScaleDownGas3() public {
-        FixedPointDecimalScale.scaleDown(0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_UP);
+        FixedPointDecimalScale.scaleDown(
+            0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_UP
+        );
     }
 
     function testScaleDownGasSlow0() public {
@@ -85,10 +89,14 @@ contract FixedPointDecimalScaleTestScaleDown is Test {
     }
 
     function testScaleDownGasSlow2() public {
-        FixedPointDecimalScaleSlow.scaleDownSlow(0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_DOWN);
+        FixedPointDecimalScaleSlow.scaleDownSlow(
+            0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_DOWN
+        );
     }
 
     function testScaleDownGasSlow3() public {
-        FixedPointDecimalScaleSlow.scaleDownSlow(0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_UP);
+        FixedPointDecimalScaleSlow.scaleDownSlow(
+            0x58f0427d0ba9a1b642ae793e3fdcece4dcd5fb0ffa7b6c746afb350c4c1d2709, 13, ROUND_UP
+        );
     }
 }

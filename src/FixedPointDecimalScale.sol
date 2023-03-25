@@ -61,26 +61,23 @@ library FixedPointDecimalScale {
     }
 
     /// Identical to `scaleUp` but saturates instead of reverting on overflow.
-    /// Note that if `scaleUpBy_` exceeds `OVERFLOW_RESCALE_OOMS` then this WILL
-    /// still overflow.
     /// @param a_ As per `scaleUp`.
     /// @param scaleUpBy_ As per `scaleUp`.
     /// @return c_ As per `scaleUp` but saturates as `type(uint256).max` on
     /// overflow.
     function scaleUpSaturating(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256 c_) {
-        // Adapted from saturatingMath.
-        // Inlining everything here saves ~250-300+ gas relative to slow.
         unchecked {
-            uint256 b_ = 10 ** scaleUpBy_;
-            c_ = a_ * b_;
-            // Checking b_ here allows us to skip an "is zero" check because even
-            // 10 ** 0 = 1, so we have a positive lower bound on b_.
-            c_ = c_ / b_ != a_ ? type(uint256).max : c_;
-        }
-
-        // Same overflow replay `scaleUp`
-        if (scaleUpBy_ >= OVERFLOW_RESCALE_OOMS) {
-            10 ** scaleUpBy_;
+            if (scaleUpBy_ >= OVERFLOW_RESCALE_OOMS) {
+                c_ = a_ == 0 ? 0 : type(uint256).max;
+            } else {
+                // Adapted from saturatingMath.
+                // Inlining everything here saves ~250-300+ gas relative to slow.
+                uint256 b_ = 10 ** scaleUpBy_;
+                c_ = a_ * b_;
+                // Checking b_ here allows us to skip an "is zero" check because even
+                // 10 ** 0 = 1, so we have a positive lower bound on b_.
+                c_ = c_ / b_ == a_ ? c_ : type(uint256).max;
+            }
         }
     }
 
@@ -90,27 +87,27 @@ library FixedPointDecimalScale {
     /// @param a_ The number to scale down.
     /// @param scaleDownBy_ Number of orders of magnitude to scale `a_` down by.
     /// Overflows if greater than 77.
-    /// @param rounding_ Rounding direction. Unknown values are treated as
-    /// rounding DOWN.
     /// @return c_ `a_` scaled down by `scaleDownBy_` and rounded.
-    function scaleDown(uint256 a_, uint256 scaleDownBy_, uint256 rounding_) internal pure returns (uint256 c_) {
-        uint256 b_;
+    function scaleDown(uint256 a_, uint256 scaleDownBy_) internal pure returns (uint256 c_) {
         unchecked {
-            b_ = 10 ** scaleDownBy_;
+            c_ = scaleDownBy_ >= OVERFLOW_RESCALE_OOMS ? 0 : a_ / (10 ** scaleDownBy_);
         }
+    }
 
-        // Replay overflow.
-        if (scaleDownBy_ >= OVERFLOW_RESCALE_OOMS) {
-            10 ** scaleDownBy_;
-        }
-
+    function scaleDownRoundUp(uint256 a_, uint256 scaleDownBy_) internal pure returns (uint256 c_) {
         unchecked {
-            c_ = a_ / b_;
-            // Intentionally doing a divide before multiply here to detect the need
-            // to round up.
-            //slither-disable-next-line divide-before-multiply
-            if (rounding_ == ROUND_UP && a_ != c_ * b_) {
-                c_ += 1;
+            if (scaleDownBy_ >= OVERFLOW_RESCALE_OOMS) {
+                c_ = 0;
+            } else {
+                uint256 b_ = 10 ** scaleDownBy_;
+                c_ = a_ / b_;
+
+                // Intentionally doing a divide before multiply here to detect
+                // the need to round up.
+                //slither-disable-next-line divide-before-multiply
+                if (a_ != c_ * b_) {
+                    c_ += 1;
+                }
             }
         }
     }
@@ -118,20 +115,26 @@ library FixedPointDecimalScale {
     /// Scale a fixed point decimal of some scale factor to 18 decimals.
     /// @param a_ Some fixed point decimal value.
     /// @param decimals_ The number of fixed decimals of `a_`.
-    /// @param rounding_ Rounding direction.
+    /// @param flags_ Controls rounding and saturation.
     /// @return `a_` scaled to 18 decimals.
-    function scale18(uint256 a_, uint256 decimals_, uint256 rounding_) internal pure returns (uint256) {
+    function scale18(uint256 a_, uint256 decimals_, uint256 flags_) internal pure returns (uint256) {
         if (FIXED_POINT_DECIMALS > decimals_) {
             unchecked {
-                return scaleUp(a_, FIXED_POINT_DECIMALS - decimals_);
+                if (flags_ & FLAG_SATURATE > 0) {
+                    return scaleUpSaturating(a_, FIXED_POINT_DECIMALS - decimals_);
+                } else {
+                    return scaleUp(a_, FIXED_POINT_DECIMALS - decimals_);
+                }
             }
-        }
-        else if (decimals_ > FIXED_POINT_DECIMALS) {
+        } else if (decimals_ > FIXED_POINT_DECIMALS) {
             unchecked {
-                return scaleDown(a_, decimals_ - FIXED_POINT_DECIMALS, rounding_);
+                if (flags_ & FLAG_ROUND_UP > 0) {
+                    return scaleDownRoundUp(a_, decimals_ - FIXED_POINT_DECIMALS);
+                } else {
+                    return scaleDown(a_, decimals_ - FIXED_POINT_DECIMALS);
+                }
             }
-        }
-        else {
+        } else {
             return a_;
         }
     }
@@ -148,13 +151,11 @@ library FixedPointDecimalScale {
             unchecked {
                 return scaleDown(a_, FIXED_POINT_DECIMALS - targetDecimals_, rounding_);
             }
-        }
-        else if (targetDecimals_ > FIXED_POINT_DECIMALS) {
+        } else if (targetDecimals_ > FIXED_POINT_DECIMALS) {
             unchecked {
                 return scaleUp(a_, targetDecimals_ - FIXED_POINT_DECIMALS);
             }
-        }
-        else {
+        } else {
             return a_;
         }
     }
@@ -188,8 +189,7 @@ library FixedPointDecimalScale {
     function scaleBy(uint256 a_, int8 scaleBy_, uint256 rounding_) internal pure returns (uint256) {
         if (scaleBy_ > 0) {
             return scaleUp(a_, uint8(scaleBy_));
-        }
-        else if (scaleBy_ < 0) {
+        } else if (scaleBy_ < 0) {
             unchecked {
                 // We know that scaleBy_ is negative here, so we can convert it
                 // to an absolute value with bitwise NOT + 1.
@@ -197,8 +197,7 @@ library FixedPointDecimalScale {
                 // casting it, and handles the case of -128 without overflow.
                 return scaleDown(a_, uint8(~scaleBy_) + 1, rounding_);
             }
-        }
-        else {
+        } else {
             return a_;
         }
     }

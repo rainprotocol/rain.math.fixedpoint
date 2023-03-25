@@ -7,7 +7,7 @@ import "../src/FixedPointDecimalScale.sol";
 import "./FixedPointDecimalScaleSlow.sol";
 
 contract FixedPointDecimalScaleTestScale18 is Test {
-    function testScale18ReferenceImplementation(uint256 a_,uint256 decimals_, uint256 rounding_) public {
+    function testScale18ReferenceImplementation(uint256 a_, uint256 decimals_, uint256 rounding_) public {
         vm.assume(!WillOverflow.scale18WillOverflow(a_, decimals_));
 
         assertEq(
@@ -26,9 +26,7 @@ contract FixedPointDecimalScaleTestScale18 is Test {
         uint256 scaleUp_ = 18 - decimals_;
         vm.assume(!WillOverflow.scaleUpWillOverflow(a_, scaleUp_));
 
-        assertEq(
-            FixedPointDecimalScale.scaleUp(a_, scaleUp_), FixedPointDecimalScale.scale18(a_, decimals_, rounding_)
-        );
+        assertEq(FixedPointDecimalScale.scaleUp(a_, scaleUp_), FixedPointDecimalScale.scale18(a_, decimals_, rounding_));
     }
 
     function testScale18LtOverflow(uint256 a_, uint8 aDecimals_, uint256 rounding_) public {
