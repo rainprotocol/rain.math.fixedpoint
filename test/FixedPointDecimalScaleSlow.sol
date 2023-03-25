@@ -39,11 +39,11 @@ library FixedPointDecimalScaleSlow {
         }
 
         if (FIXED_POINT_DECIMALS > decimals_) {
-            scaleUpSlow(a_, FIXED_POINT_DECIMALS - decimals_);
+            return scaleUpSlow(a_, FIXED_POINT_DECIMALS - decimals_);
         }
 
         if (decimals_ > FIXED_POINT_DECIMALS) {
-            scaleDownSlow(a_, decimals_ - FIXED_POINT_DECIMALS, rounding_);
+            return scaleDownSlow(a_, decimals_ - FIXED_POINT_DECIMALS, rounding_);
         }
     }
 }
