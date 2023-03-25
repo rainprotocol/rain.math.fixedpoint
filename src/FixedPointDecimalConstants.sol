@@ -14,5 +14,8 @@ uint256 constant FLAG_ROUND_UP = 1;
 /// @dev Calculations MUST saturate NOT overflow.
 uint256 constant FLAG_SATURATE = 1 << 1;
 
+/// @dev Flags MUST NOT exceed this value.
+uint256 constant FLAG_MAX_INT = FLAG_SATURATE | FLAG_ROUND_UP;
+
 /// @dev Can't represent this many OOMs of decimals in `uint256`.
 uint256 constant OVERFLOW_RESCALE_OOMS = 78;
