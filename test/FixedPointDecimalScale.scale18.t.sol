@@ -4,8 +4,18 @@ pragma solidity ^0.8.18;
 import "forge-std/Test.sol";
 import "./WillOverflow.sol";
 import "../src/FixedPointDecimalScale.sol";
+import "./FixedPointDecimalScaleSlow.sol";
 
 contract FixedPointDecimalScaleTestScale18 is Test {
+    function testScale18ReferenceImplementation(uint256 a_,uint256 decimals_, uint256 rounding_) public {
+        vm.assume(!WillOverflow.scale18WillOverflow(a_, decimals_));
+
+        assertEq(
+            FixedPointDecimalScaleSlow.scale18Slow(a_, decimals_, rounding_),
+            FixedPointDecimalScale.scale18(a_, decimals_, rounding_)
+        );
+    }
+
     function testScale1818(uint256 a_, uint256 rounding_) public {
         assertEq(a_, FixedPointDecimalScale.scale18(a_, 18, rounding_));
     }
