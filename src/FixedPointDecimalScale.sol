@@ -181,11 +181,13 @@ library FixedPointDecimalScale {
         } else if (scaleBy_ > 0) {
             return scaleUp(a_, uint8(scaleBy_));
         } else {
-            uint256 scaleDownBy_;
             unchecked {
-                scaleDownBy_ = uint8(-1 * scaleBy_);
+                // We know that scaleBy_ is negative here, so we can convert it
+                // to an absolute value with bitwise NOT + 1.
+                // This is slightly less gas than multiplying by negative 1 and
+                // casting it, and handles the case of -128 without overflow.
+                return scaleDown(a_, uint8(~scaleBy_) + 1, rounding_);
             }
-            return scaleDown(a_, scaleDownBy_, rounding_);
         }
     }
 }
