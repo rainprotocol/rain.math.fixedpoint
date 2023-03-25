@@ -107,23 +107,23 @@ library FixedPointDecimalScale {
 
     /// Scale a fixed point decimal of some scale factor to 18 decimals.
     /// @param a_ Some fixed point decimal value.
-    /// @param aDecimals_ The number of fixed decimals of `a_`.
+    /// @param decimals_ The number of fixed decimals of `a_`.
     /// @param rounding_ Rounding direction.
     /// @return `a_` scaled to 18 decimals.
-    function scale18(uint256 a_, uint256 aDecimals_, uint256 rounding_) internal pure returns (uint256) {
-        uint256 decimals_;
-        if (FIXED_POINT_DECIMALS > aDecimals_) {
+    function scale18(uint256 a_, uint256 decimals_, uint256 rounding_) internal pure returns (uint256) {
+        if (FIXED_POINT_DECIMALS > decimals_) {
             unchecked {
-                decimals_ = FIXED_POINT_DECIMALS - aDecimals_;
+                return scaleUp(a_, FIXED_POINT_DECIMALS - decimals_);
             }
-            a_ = scaleUp(a_, decimals_);
-        } else if (FIXED_POINT_DECIMALS < aDecimals_) {
-            unchecked {
-                decimals_ = aDecimals_ - FIXED_POINT_DECIMALS;
-            }
-            a_ = scaleDown(a_, decimals_, rounding_);
         }
-        return a_;
+        else if (decimals_ > FIXED_POINT_DECIMALS) {
+            unchecked {
+                return scaleDown(a_, decimals_ - FIXED_POINT_DECIMALS, rounding_);
+            }
+        }
+        else {
+            return a_;
+        }
     }
 
     /// Scale an 18 decimal fixed point value to some other scale.

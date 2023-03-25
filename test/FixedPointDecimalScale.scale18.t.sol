@@ -10,14 +10,14 @@ contract FixedPointDecimalScaleTestScale18 is Test {
         assertEq(a_, FixedPointDecimalScale.scale18(a_, 18, rounding_));
     }
 
-    function testScale18Lt(uint256 a_, uint256 aDecimals_, uint256 rounding_) public {
-        vm.assume(aDecimals_ < 18);
+    function testScale18Lt(uint256 a_, uint256 decimals_, uint256 rounding_) public {
+        vm.assume(decimals_ < 18);
 
-        uint256 scaleUp_ = 18 - aDecimals_;
+        uint256 scaleUp_ = 18 - decimals_;
         vm.assume(!WillOverflow.scaleUpWillOverflow(a_, scaleUp_));
 
         assertEq(
-            FixedPointDecimalScale.scaleUp(a_, scaleUp_), FixedPointDecimalScale.scale18(a_, aDecimals_, rounding_)
+            FixedPointDecimalScale.scaleUp(a_, scaleUp_), FixedPointDecimalScale.scale18(a_, decimals_, rounding_)
         );
     }
 
