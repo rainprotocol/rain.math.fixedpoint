@@ -208,11 +208,8 @@ library FixedPointDecimalScale {
     /// value that it would have as though `a_` and `b_` were both 18 decimals
     /// and we hadn't rescaled the ratio.
     ///
-    /// This is a wrapper around `scaleBy` that calcualates the OOMs to scale by
-    /// as `bDecimals_ - aDecimals_`. This means that if the difference between
-    /// these two decimals exceeds the signed integer range,
-    /// i.e. `[type(int8).min, type(int8).max]`, then `scaleRatio` will overflow
-    /// and revert.
+    /// This is similar to `scaleBy` that calcualates the OOMs to scale by as
+    /// `bDecimals_ - aDecimals_`.
     ///
     /// @param ratio_ The ratio to be scaled.
     /// @param aDecimals_ The decimals of the ratio numerator.
@@ -223,31 +220,28 @@ library FixedPointDecimalScale {
         pure
         returns (uint256)
     {
-        int8 scaleBy_ = 0;
-        uint8 diff_ = 0;
-        if (bDecimals_ > aDecimals_) {
-            unchecked {
-                diff_ = bDecimals_ - aDecimals_;
+        unchecked {
+            if (bDecimals_ > aDecimals_) {
+                uint8 scaleUpBy_ = bDecimals_ - aDecimals_;
+                if (flags_ & FLAG_SATURATE > 0) {
+                    return scaleUpSaturating(ratio_, scaleUpBy_);
+                }
+                else {
+                    return scaleUp(ratio_, scaleUpBy_);
+                }
             }
-            // Trigger overflow if diff won't fit in `int8`.
-            if (diff_ > uint8(type(int8).max)) {
-                diff_ + type(uint8).max;
+            else if (aDecimals_ > bDecimals_) {
+                uint8 scaleDownBy_ = aDecimals_ - bDecimals_;
+                if (flags_ & FLAG_ROUND_UP > 0) {
+                    return scaleDownRoundUp(ratio_, scaleDownBy_);
+                }
+                else {
+                    return scaleDown(ratio_, scaleDownBy_);
+                }
             }
-            scaleBy_ = int8(diff_);
-        } else if (aDecimals_ > bDecimals_) {
-            unchecked {
-                diff_ = aDecimals_ - bDecimals_;
-            }
-            if (diff_ <= uint8(type(int8).max)) {
-                scaleBy_ = -1 * int8(diff_);
-            } else if (diff_ == 128) {
-                scaleBy_ = -128;
-            }
-            // Trigger overflow if diff won't fit in `int8`.
             else {
-                diff_ + type(uint8).max;
+                return ratio_;
             }
         }
-        return scaleBy(ratio_, scaleBy_, flags_);
     }
 }

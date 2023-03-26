@@ -44,45 +44,34 @@ contract FixedPointDecimalScaleScaleRatioTest is Test {
 
     function testScaleRatioOverflow(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 flags_) public {
         vm.assume(flags_ <= FLAG_MAX_INT);
-
         vm.assume(WillOverflow.scaleRatioWillOverflow(ratio_, aDecimals_, bDecimals_, flags_));
 
         vm.expectRevert(stdError.arithmeticError);
         FixedPointDecimalScale.scaleRatio(ratio_, aDecimals_, bDecimals_, flags_);
     }
 
-    function testScaleRatioOverflowDecimalBoundaries(uint256 ratio_, uint256 flags_) public {
-        flags_ = FLAG_ROUND_UP & flags_;
-
-        vm.expectRevert(stdError.arithmeticError);
-        FixedPointDecimalScale.scaleRatio(ratio_, 129, 0, flags_);
-
-        vm.expectRevert(stdError.arithmeticError);
-        FixedPointDecimalScale.scaleRatio(ratio_, 0, 128, flags_);
-    }
-
-    function testScaleRatioGas0() public {
+    function testScaleRatioGas0() public pure {
         FixedPointDecimalScale.scaleRatio(0, 0, 0, 0);
     }
 
-    function testScaleRatioGas1() public {
+    function testScaleRatioGas1() public pure {
         FixedPointDecimalScale.scaleRatio(1, 0, 0, 0);
     }
 
-    function testScaleRatioGas2() public {
+    function testScaleRatioGas2() public pure {
         FixedPointDecimalScale.scaleRatio(1, 1, 2, 0);
     }
 
-    function testScaleRatioGas3() public {
+    function testScaleRatioGas3() public pure {
         FixedPointDecimalScale.scaleRatio(1, 2, 1, 0);
     }
 
     // Worst case on scale down is 128 scale by
-    function testScaleRatioGas4() public {
+    function testScaleRatioGas4() public pure {
         FixedPointDecimalScale.scaleRatio(1, 128, 0, 0);
     }
 
-    function testScaleRatioGas5() public {
+    function testScaleRatioGas5() public pure {
         FixedPointDecimalScale.scaleRatio(1, 0, 127, FLAG_SATURATE);
     }
 }
