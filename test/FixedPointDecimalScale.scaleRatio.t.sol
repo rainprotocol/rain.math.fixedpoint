@@ -4,16 +4,13 @@ pragma solidity ^0.8.18;
 import "forge-std/Test.sol";
 import "../src/FixedPointDecimalScale.sol";
 import "../src/FixedPointDecimalConstants.sol";
+import "./WillOverflow.sol";
 
 contract FixedPointDecimalScaleScaleRatioTest is Test {
-    // function testScaleRatioFuzz(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_) public {
-    //     vm.assume(!WillOverflow.scaleRatioWillOverflow(ratio_, aDecimals_, bDecimals_, rounding_));
-
-    //     assertEq(
-    //         FixedPointDecimalScale.scaleRatio(ratio_, aDecimals_, bDecimals_, rounding_),
-    //         FixedPointDecimalScale.scaleDown(ratio_ * (10 ** (18 + bDecimals_ - aDecimals_)), 18, rounding_)
-    //     );
-    // }
+    function testScaleRatioSame(uint256 ratio_, uint8 decimals_, uint256 flags_) public {
+        vm.assume(flags_ <= FLAG_MAX_INT);
+        assertEq(ratio_, FixedPointDecimalScale.scaleRatio(ratio_, decimals_, decimals_, flags_));
+    }
 
     // Ported from legacy tests.
     function testScaleRatioExamples() public {
@@ -45,14 +42,12 @@ contract FixedPointDecimalScaleScaleRatioTest is Test {
         );
     }
 
-    // @todo This DOES NOT reliably overflow because the `scaleRatioWillOverflow`
-    // function is too conservative. If it was accurate then this fuzz would
-    // pass.
-    //
-    // function testScaleRatioFuzzOverflow(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_) public {
-    //     vm.assume(scaleRatioWillOverflow(ratio_, aDecimals_, bDecimals_, rounding_));
+    function testScaleRatioOverflow(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 flags_) public {
+        vm.assume(flags_ <= FLAG_MAX_INT);
 
-    //     vm.expectRevert(stdError.arithmeticError);
-    //     FixedPointScale.scaleRatio(ratio_, aDecimals_, bDecimals_, rounding_);
-    // }
+        vm.assume(WillOverflow.scaleRatioWillOverflow(ratio_, aDecimals_, bDecimals_, flags_));
+
+        vm.expectRevert(stdError.arithmeticError);
+        FixedPointDecimalScale.scaleRatio(ratio_, aDecimals_, bDecimals_, flags_);
+    }
 }

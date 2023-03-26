@@ -210,12 +210,37 @@ library FixedPointDecimalScale {
     /// @param ratio_ The ratio to be scaled.
     /// @param aDecimals_ The decimals of the ratio numerator.
     /// @param bDecimals_ The decimals of the ratio denominator.
-    /// @param rounding_ Rounding direction.
-    function scaleRatio(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 rounding_)
+    /// @param flags_ Controls rounding and saturating.
+    function scaleRatio(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 flags_)
         internal
         pure
         returns (uint256)
     {
-        return scaleBy(ratio_, int8(bDecimals_) - int8(aDecimals_), rounding_);
+        int8 scaleBy_ = 0;
+        uint8 diff_ = 0;
+        if (bDecimals_ > aDecimals_) {
+            unchecked {
+                diff_ = bDecimals_ - aDecimals_;
+            }
+            // Trigger overflow if diff won't fit in `int8`.
+            if (diff_ > uint8(type(int8).max)) {
+                diff_ + type(uint8).max;
+            }
+            scaleBy_ = int8(diff_);
+        } else if (aDecimals_ > bDecimals_) {
+            unchecked {
+                diff_ = aDecimals_ - bDecimals_;
+            }
+            if (diff_ <= uint8(type(int8).max)) {
+                scaleBy_ = -1 * int8(diff_);
+            } else if (diff_ == 128) {
+                scaleBy_ = -128;
+            }
+            // Trigger overflow if diff won't fit in `int8`.
+            else {
+                diff_ + type(uint8).max;
+            }
+        }
+        return scaleBy(ratio_, scaleBy_, flags_);
     }
 }

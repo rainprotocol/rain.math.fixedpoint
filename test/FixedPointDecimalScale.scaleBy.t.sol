@@ -30,34 +30,49 @@ contract FixedPointDecimalScaleTestScaleBy is Test {
         vm.assume(!WillOverflow.scaleUpWillOverflow(a_, uint8(scaleBy_)));
 
         assertEq(
-            FixedPointDecimalScale.scaleUp(a_, uint8(scaleBy_)),
+            FixedPointDecimalScale.scaleUp(a_, uint8(scaleBy_)), FixedPointDecimalScale.scaleBy(a_, scaleBy_, flags_)
+        );
+    }
+
+    function testScaleByUpOverflow(uint256 a_, int8 scaleBy_, uint256 flags_) public {
+        // Keep rounding flag.
+        flags_ = flags_ & FLAG_ROUND_UP;
+        vm.assume(scaleBy_ > 0);
+        vm.assume(WillOverflow.scaleUpWillOverflow(a_, uint8(scaleBy_)));
+        vm.expectRevert(stdError.arithmeticError);
+        FixedPointDecimalScale.scaleBy(a_, scaleBy_, flags_);
+    }
+
+    function testScaleByUpSaturate(uint256 a_, int8 scaleBy_, uint256 flags_) public {
+        // Keep rounding flag.
+        flags_ = FLAG_SATURATE | (flags_ & FLAG_ROUND_UP);
+        vm.assume(scaleBy_ > 0);
+
+        assertEq(
+            FixedPointDecimalScale.scaleUpSaturating(a_, uint8(scaleBy_)),
             FixedPointDecimalScale.scaleBy(a_, scaleBy_, flags_)
         );
     }
 
-function testScaleByUpOverflow(uint256 a_, int8 scaleBy_, uint256 flags_) public {
-    // Keep rounding flag.
-    flags_ = flags_ & FLAG_ROUND_UP;
-    vm.assume(scaleBy_ > 0);
-    vm.assume(WillOverflow.scaleUpWillOverflow(a_, uint8(scaleBy_)));
-    vm.expectRevert(stdError.arithmeticError);
-    FixedPointDecimalScale.scaleBy(a_, scaleBy_, flags_);
-}
+    function testScaleByDown(uint256 a_, int8 scaleBy_, uint256 flags_) public {
+        // Keep saturate flag.
+        flags_ = flags_ & FLAG_SATURATE;
+        vm.assume(scaleBy_ < 0);
 
-// function testScaleByDown(uint256 a_, int8 scaleBy_, uint256 rounding_) public {
-//     vm.assume(scaleBy_ < 0);
-//     vm.assume(stdMath.abs(scaleBy_) < OVERFLOW_RESCALE_OOMS);
+        assertEq(
+            FixedPointDecimalScale.scaleBy(a_, scaleBy_, flags_),
+            FixedPointDecimalScale.scaleDown(a_, stdMath.abs(scaleBy_))
+        );
+    }
 
-//     assertEq(
-//         FixedPointDecimalScale.scaleBy(a_, scaleBy_, rounding_),
-//         FixedPointDecimalScale.scaleDown(a_, stdMath.abs(scaleBy_), rounding_)
-//     );
-// }
+    function testScaleByDownRoundUp(uint256 a_, int8 scaleBy_, uint256 flags_) public {
+        // Keep saturate flag.
+        flags_ = FLAG_ROUND_UP | (flags_ & FLAG_SATURATE);
+        vm.assume(scaleBy_ < 0);
 
-// function testScaleByOverflow(uint256 a_, int8 scaleBy_, uint256 rounding_) public {
-//     vm.assume(stdMath.abs(scaleBy_) >= OVERFLOW_RESCALE_OOMS);
-
-//     vm.expectRevert(stdError.arithmeticError);
-//     FixedPointDecimalScale.scaleBy(a_, scaleBy_, rounding_);
-// }
+        assertEq(
+            FixedPointDecimalScale.scaleBy(a_, scaleBy_, flags_),
+            FixedPointDecimalScale.scaleDownRoundUp(a_, stdMath.abs(scaleBy_))
+        );
+    }
 }

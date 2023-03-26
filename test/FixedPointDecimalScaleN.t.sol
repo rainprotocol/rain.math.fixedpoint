@@ -57,8 +57,7 @@ contract FixedPointDecimalScaleTestScaleN is Test {
         vm.assume(!WillOverflow.scaleUpWillOverflow(a_, scaleUpBy_));
 
         assertEq(
-            FixedPointDecimalScale.scaleN(a_, targetDecimals_, flags_),
-            FixedPointDecimalScale.scaleUp(a_, scaleUpBy_)
+            FixedPointDecimalScale.scaleN(a_, targetDecimals_, flags_), FixedPointDecimalScale.scaleUp(a_, scaleUpBy_)
         );
     }
 
@@ -86,5 +85,4 @@ contract FixedPointDecimalScaleTestScaleN is Test {
             FixedPointDecimalScale.scaleN(a_, targetDecimals_, flags_)
         );
     }
-
 }
