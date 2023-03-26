@@ -207,6 +207,13 @@ library FixedPointDecimalScale {
     /// i.e. a subsequent call to `a_.fixedPointMul(ratio_)` would yield the
     /// value that it would have as though `a_` and `b_` were both 18 decimals
     /// and we hadn't rescaled the ratio.
+    ///
+    /// This is a wrapper around `scaleBy` that calcualates the OOMs to scale by
+    /// as `bDecimals_ - aDecimals_`. This means that if the difference between
+    /// these two decimals exceeds the signed integer range,
+    /// i.e. `[type(int8).min, type(int8).max]`, then `scaleRatio` will overflow
+    /// and revert.
+    ///
     /// @param ratio_ The ratio to be scaled.
     /// @param aDecimals_ The decimals of the ratio numerator.
     /// @param bDecimals_ The decimals of the ratio denominator.
