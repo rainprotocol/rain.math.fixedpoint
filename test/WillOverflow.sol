@@ -27,23 +27,23 @@ library WillOverflow {
         return c_ * b_ != a_;
     }
 
-    function scale18WillOverflow(uint256 a_, uint256 decimals_) internal pure returns (bool) {
-        if (decimals_ < FIXED_POINT_DECIMALS) {
+    function scale18WillOverflow(uint256 a_, uint256 decimals_, uint256 flags_) internal pure returns (bool) {
+        if (decimals_ < FIXED_POINT_DECIMALS && (FLAG_SATURATE & flags_ == 0)) {
             return scaleUpWillOverflow(a_, FIXED_POINT_DECIMALS - decimals_);
         } else {
             return false;
         }
     }
 
-    function scaleNWillOverflow(uint256 a_, uint256 decimals_) internal pure returns (bool) {
-        if (decimals_ > FIXED_POINT_DECIMALS) {
+    function scaleNWillOverflow(uint256 a_, uint256 decimals_, uint256 flags_) internal pure returns (bool) {
+        if (decimals_ > FIXED_POINT_DECIMALS && (FLAG_SATURATE & flags_ == 0)) {
             return scaleUpWillOverflow(a_, decimals_ - FIXED_POINT_DECIMALS);
         } else {
             return false;
         }
     }
 
-    function scaleByWillOverflow(uint256 a_, int8 scaleBy_) internal pure returns (bool) {
+    function scaleByWillOverflow(uint256 a_, int8 scaleBy_, uint256 flags_) internal pure returns (bool) {
         if (scaleBy_ > 0) {
             return scaleUpWillOverflow(a_, uint8(scaleBy_));
         } else {

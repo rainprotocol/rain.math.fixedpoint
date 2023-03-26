@@ -9,7 +9,7 @@ import "./FixedPointDecimalScaleSlow.sol";
 contract FixedPointDecimalScaleTestScaleBy is Test {
     function testScaleByReferenceImplementation(uint256 a_, int8 scaleBy_, uint256 flags_) public {
         vm.assume(flags_ <= FLAG_MAX_INT);
-        vm.assume(!WillOverflow.scaleByWillOverflow(a_, scaleBy_));
+        vm.assume(!WillOverflow.scaleByWillOverflow(a_, scaleBy_, flags_));
 
         assertEq(
             FixedPointDecimalScaleSlow.scaleBySlow(a_, scaleBy_, flags_),
