@@ -43,6 +43,15 @@ library WillOverflow {
         }
     }
 
+    function scaleByWillOverflow(uint256 a_, int8 scaleBy_) internal pure returns (bool) {
+        if (scaleBy_ > 0) {
+            return scaleUpWillOverflow(a_, uint8(scaleBy_));
+        }
+        else {
+            return false;
+        }
+    }
+
     function scaleRatioWillOverflow(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_) internal pure returns (bool) {
         if (18 + uint256(bDecimals_) < aDecimals_) {
             return true;
@@ -59,4 +68,5 @@ library WillOverflow {
             return false;
         }
     }
+
 }

@@ -97,4 +97,27 @@ library FixedPointDecimalScaleSlow {
 
         return a_;
     }
+
+    function scaleBySlow(uint256 a_, int8 scaleBy_, uint256 flags_) internal pure returns (uint256) {
+        if (scaleBy_ > 0) {
+            if (flags_ & FLAG_SATURATE != 0) {
+                return scaleUpSaturatingSlow(a_, uint8(scaleBy_));
+            }
+            else {
+                return scaleUpSlow(a_, uint8(scaleBy_));
+            }
+        }
+
+        if (scaleBy_ < 0) {
+            uint8 scaleDownBy_ = scaleBy_ == -128 ? 128 : uint8(-1 * scaleBy_);
+            if (flags_ & FLAG_ROUND_UP != 0) {
+                return scaleDownRoundUpSlow(a_, scaleDownBy_);
+            }
+            else {
+                return scaleDownSlow(a_, scaleDownBy_);
+            }
+        }
+
+        return a_;
+    }
 }
