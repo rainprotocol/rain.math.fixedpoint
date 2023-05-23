@@ -225,21 +225,17 @@ library FixedPointDecimalScale {
                 uint8 scaleUpBy_ = bDecimals_ - aDecimals_;
                 if (flags_ & FLAG_SATURATE > 0) {
                     return scaleUpSaturating(ratio_, scaleUpBy_);
-                }
-                else {
+                } else {
                     return scaleUp(ratio_, scaleUpBy_);
                 }
-            }
-            else if (aDecimals_ > bDecimals_) {
+            } else if (aDecimals_ > bDecimals_) {
                 uint8 scaleDownBy_ = aDecimals_ - bDecimals_;
                 if (flags_ & FLAG_ROUND_UP > 0) {
                     return scaleDownRoundUp(ratio_, scaleDownBy_);
-                }
-                else {
+                } else {
                     return scaleDown(ratio_, scaleDownBy_);
                 }
-            }
-            else {
+            } else {
                 return ratio_;
             }
         }
