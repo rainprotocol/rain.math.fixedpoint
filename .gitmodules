@@ -5,3 +5,6 @@
 [submodule "lib/rain.math.saturating"]
 	path = lib/rain.math.saturating
 	url = https://github.com/rainprotocol/rain.math.saturating
+[submodule "lib/openzeppelin-contracts"]
+	path = lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
