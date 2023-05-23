@@ -1,0 +1,487 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title></title>
+        <meta name="robots" content="noindex" />
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="book.css">
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item "><a href="index.html">Home</a></li><li class="chapter-item affix "><li class="part-title">src</li><li class="chapter-item "><a href="src/FixedPointDecimalArithmeticOpenZeppelin.sol/library.FixedPointDecimalArithmeticOpenZeppelin.html">FixedPointDecimalArithmeticOpenZeppelin</a></li><li class="chapter-item "><a href="src/FixedPointDecimalConstants.sol/constants.FixedPointDecimalConstants.html">FixedPointDecimalConstants</a></li><li class="chapter-item "><a href="src/FixedPointDecimalScale.sol/library.FixedPointDecimalScale.html">FixedPointDecimalScale</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/rainprotocol/rain.math.fixedpoint" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="rainmathfixedpoint"><a class="header" href="#rainmathfixedpoint">rain.math.fixedpoint</a></h1>
+<p>Docs at https://rainprotocol.github.io/rain.math.fixedpoint</p>
+<h2 id="goals"><a class="header" href="#goals">Goals</a></h2>
+<p>Ideally we'd not need this library as math primitives are probably best handled
+in some upstream library.</p>
+<p>What we need:</p>
+<ul>
+<li>18 decimal fixed point math</li>
+<li>handle rounding directions explicitly</li>
+<li>rescale non-18 decimal fixed point values (e.g. ERC20 token amounts) to/from
+18 decimals so that we can do math on them</li>
+<li>avoid code bloat in an interpreter due to importing several libs with heavily
+overlapping scope</li>
+<li>open source license, but not forcing ppl to jump on the GPL crusade</li>
+<li>minimal surface area so we can gracefully deprecate this lib if all the above
+is provided elsewhere someday</li>
+<li>works on simple <code>uint256</code> values</li>
+</ul>
+<p>Upstream candidates:</p>
+<ul>
+<li>Open Zeppelin
+<ul>
+<li>Has implementations that include rounding direction 👍</li>
+<li>Audited code due to recent ERC4626 implementation 👍</li>
+<li>Only includes math needed by the specs implemented, not general purpose 👎</li>
+</ul>
+</li>
+<li>PRB math
+<ul>
+<li>General purpose fixed point math 👍</li>
+<li>Where the scope overlaps OZ the logic is similar or identical 👍</li>
+<li>No ability to specify rounding or to rescale outside 18 decimals 👎</li>
+<li>Never audited 👎</li>
+</ul>
+</li>
+<li>Others
+<ul>
+<li>Either wrong license or issues as pointed out on PRB math repo</li>
+</ul>
+</li>
+</ul>
+<p>Since we need math that isn't provided by Open Zeppelin, and we aren't going to
+write it ourselves, PRB math seems to be the most reasonable foundation. At the
+same time, Open Zeppelin may already be a dependency for other reasons, such as
+some token implementation, so including both OZ and PRB in a single contract can
+bloat code.</p>
+<h2 id="non-goals"><a class="header" href="#non-goals">Non-goals</a></h2>
+<p>None of this is supported/needed:</p>
+<ul>
+<li>Signed math</li>
+<li>Non-18 decimal fixed point math (other than rescaling)</li>
+<li>One size fits all solution</li>
+</ul>
+<h2 id="approach"><a class="header" href="#approach">Approach</a></h2>
+<ul>
+<li>Provide a base repo (this one) that has zero dependencies, to focus on the
+logic required to rescale between decimals, that are lib agnostic.</li>
+<li>Provide supporting repos to normalise Open Zeppelin and PRB math
+<ul>
+<li>OZ includes <code>muldiv</code> but doesn't have an opinion on decimals, so caller is
+forced to provide &quot;one&quot; at every step and mentally balance multiplication
+and division</li>
+<li>PRB is opinionated with sane defaults for 18 decimal math but provides no
+rounding or rescaling support</li>
+</ul>
+</li>
+</ul>
+<p>Downstream consumers are advised to select <em>one</em> of either OZ or PRB to compile
+into their contracts, using the relevant supporting libs only, to minimise
+dependencies and potential code bloat, or even inconsistent behaviours between
+libs.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="fixedpointdecimalarithmeticopenzeppelin"><a class="header" href="#fixedpointdecimalarithmeticopenzeppelin">FixedPointDecimalArithmeticOpenZeppelin</a></h1>
+<p><a href="https://github.com/rainprotocol/rain.math.fixedpoint/blob/84cb2ae98305719574aca4cf754aed8b681eb5d9/src/FixedPointDecimalArithmeticOpenZeppelin.sol">Git Source</a></p>
+<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
+<h3 id="fixedpointmul"><a class="header" href="#fixedpointmul">fixedPointMul</a></h3>
+<p>Fixed point multiplication in 18 decimal fixed point.
+Both <code>a</code> and <code>b</code> MUST be 18 decimal fixed point values.
+Implemented in terms of Open Zeppelin <code>Math</code> library.</p>
+<pre><code class="language-solidity">function fixedPointMul(uint256 a, uint256 b, Math.Rounding rounding) internal pure returns (uint256);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>a</code></td><td><code>uint256</code></td><td>First term.</td></tr>
+<tr><td><code>b</code></td><td><code>uint256</code></td><td>Second term.</td></tr>
+<tr><td><code>rounding</code></td><td><code>Math.Rounding</code></td><td>Rounding direction as per Open Zeppelin <code>Math</code>.</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>uint256</code></td><td><code>a</code> multiplied by <code>b</code> in 18 fixed point decimals.</td></tr>
+</tbody></table>
+</div>
+<h3 id="fixedpointdiv"><a class="header" href="#fixedpointdiv">fixedPointDiv</a></h3>
+<p>Fixed point division in 18 decimal fixed point.
+Both <code>a</code> and <code>b</code> MUST be 18 decimal fixed point values.
+Implemented in terms of Open Zeppelin <code>Math</code> library.</p>
+<pre><code class="language-solidity">function fixedPointDiv(uint256 a, uint256 b, Math.Rounding rounding) internal pure returns (uint256);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>a</code></td><td><code>uint256</code></td><td>First term.</td></tr>
+<tr><td><code>b</code></td><td><code>uint256</code></td><td>Second term.</td></tr>
+<tr><td><code>rounding</code></td><td><code>Math.Rounding</code></td><td>Rounding direction as per Open Zeppelin <code>Math</code>.</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>uint256</code></td><td><code>a</code> divided by <code>b</code> in 18 fixed point decimals.</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="constants"><a class="header" href="#constants">Constants</a></h1>
+<p><a href="https://github.com/rainprotocol/rain.math.fixedpoint/blob/84cb2ae98305719574aca4cf754aed8b681eb5d9/src/FixedPointDecimalConstants.sol">Git Source</a></p>
+<h3 id="fixed_point_decimals"><a class="header" href="#fixed_point_decimals">FIXED_POINT_DECIMALS</a></h3>
+<p><em>The scale of all fixed point math. This is adopting the conventions of
+both ETH (wei) and most ERC20 tokens, so is hopefully uncontroversial.</em></p>
+<pre><code class="language-solidity">uint256 constant FIXED_POINT_DECIMALS = 18;
+</code></pre>
+<h3 id="fixed_point_one"><a class="header" href="#fixed_point_one">FIXED_POINT_ONE</a></h3>
+<p><em>Value of &quot;one&quot; for fixed point math.</em></p>
+<pre><code class="language-solidity">uint256 constant FIXED_POINT_ONE = 1e18;
+</code></pre>
+<h3 id="flag_round_up"><a class="header" href="#flag_round_up">FLAG_ROUND_UP</a></h3>
+<p><em>Calculations MUST round up.</em></p>
+<pre><code class="language-solidity">uint256 constant FLAG_ROUND_UP = 1;
+</code></pre>
+<h3 id="flag_saturate"><a class="header" href="#flag_saturate">FLAG_SATURATE</a></h3>
+<p><em>Calculations MUST saturate NOT overflow.</em></p>
+<pre><code class="language-solidity">uint256 constant FLAG_SATURATE = 1 &lt;&lt; 1;
+</code></pre>
+<h3 id="flag_max_int"><a class="header" href="#flag_max_int">FLAG_MAX_INT</a></h3>
+<p><em>Flags MUST NOT exceed this value.</em></p>
+<pre><code class="language-solidity">uint256 constant FLAG_MAX_INT = FLAG_SATURATE | FLAG_ROUND_UP;
+</code></pre>
+<h3 id="overflow_rescale_ooms"><a class="header" href="#overflow_rescale_ooms">OVERFLOW_RESCALE_OOMS</a></h3>
+<p><em>Can't represent this many OOMs of decimals in <code>uint256</code>.</em></p>
+<pre><code class="language-solidity">uint256 constant OVERFLOW_RESCALE_OOMS = 78;
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="fixedpointdecimalscale"><a class="header" href="#fixedpointdecimalscale">FixedPointDecimalScale</a></h1>
+<p><a href="https://github.com/rainprotocol/rain.math.fixedpoint/blob/84cb2ae98305719574aca4cf754aed8b681eb5d9/src/FixedPointDecimalScale.sol">Git Source</a></p>
+<p>Tools to scale unsigned values to/from 18 decimal fixed point
+representation.
+Overflows error and underflows are rounded up or down explicitly.
+The max uint256 as decimal is roughly 1e77 so scaling values comparable to
+1e18 is unlikely to ever overflow in most contexts. For a typical use case
+involving tokens, the entire supply of a token rescaled up a full 18 decimals
+would still put it &quot;only&quot; in the region of ~1e40 which has a full 30 orders
+of magnitude buffer before running into saturation issues. However, there's
+no theoretical reason that a token or any other use case couldn't use large
+numbers or extremely precise decimals that would push this library to
+overflow point, so it MUST be treated with caution around the edge cases.
+Scaling down ANY fixed point decimal also reduces the precision which can
+lead to  dust or in the worst case trapped funds if subsequent subtraction
+overflows a rounded-down number. Consider using saturating subtraction for
+safety against previously downscaled values, and whether trapped dust is a
+significant issue. If you need to retain full/arbitrary precision in the case
+of downscaling DO NOT use this library.
+All rescaling and/or division operations in this library require a rounding
+flag. This allows and forces the caller to specify where dust sits due to
+rounding. For example the caller could round up when taking tokens from
+<code>msg.sender</code> and round down when returning them, ensuring that any dust in
+the round trip accumulates in the contract rather than opening an exploit or
+reverting and trapping all funds. This is exactly how the ERC4626 vault spec
+handles dust and is a good reference point in general. Typically the contract
+holding tokens and non-interactive participants should be favoured by
+rounding calculations rather than active participants. This is because we
+assume that an active participant, e.g. <code>msg.sender</code>, knowns something we
+don't and is carefully crafting an attack, so we are most conservative and
+suspicious of their inputs and actions.</p>
+<h2 id="functions-1"><a class="header" href="#functions-1">Functions</a></h2>
+<h3 id="scaleup"><a class="header" href="#scaleup">scaleUp</a></h3>
+<p>Scales <code>a_</code> up by a specified number of decimals.</p>
+<pre><code class="language-solidity">function scaleUp(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256 b_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>a_</code></td><td><code>uint256</code></td><td>The number to scale up.</td></tr>
+<tr><td><code>scaleUpBy_</code></td><td><code>uint256</code></td><td>Number of orders of magnitude to scale <code>b_</code> up by. Errors if overflows.</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>b_</code></td><td><code>uint256</code></td><td><code>a_</code> scaled up by <code>scaleUpBy_</code>.</td></tr>
+</tbody></table>
+</div>
+<h3 id="scaleupsaturating"><a class="header" href="#scaleupsaturating">scaleUpSaturating</a></h3>
+<p>Identical to <code>scaleUp</code> but saturates instead of reverting on overflow.</p>
+<pre><code class="language-solidity">function scaleUpSaturating(uint256 a_, uint256 scaleUpBy_) internal pure returns (uint256 c_);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>a_</code></td><td><code>uint256</code></td><td>As per <code>scaleUp</code>.</td></tr>
+<tr><td><code>scaleUpBy_</code></td><td><code>uint256</code></td><td>As per <code>scaleUp</code>.</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>c_</code></td><td><code>uint256</code></td><td>As per <code>scaleUp</code> but saturates as <code>type(uint256).max</code> on overflow.</td></tr>
+</tbody></table>
+</div>
+<h3 id="scaledown"><a class="header" href="#scaledown">scaleDown</a></h3>
+<p>Scales <code>a_</code> down by a specified number of decimals, rounding in the
+specified direction. Used internally by several other functions in this
+lib.</p>
+<pre><code class="language-solidity">function scaleDown(uint256 a_, uint256 scaleDownBy_) internal pure returns (uint256);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>a_</code></td><td><code>uint256</code></td><td>The number to scale down.</td></tr>
+<tr><td><code>scaleDownBy_</code></td><td><code>uint256</code></td><td>Number of orders of magnitude to scale <code>a_</code> down by. Overflows if greater than 77.</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>uint256</code></td><td>c_ <code>a_</code> scaled down by <code>scaleDownBy_</code> and rounded.</td></tr>
+</tbody></table>
+</div>
+<h3 id="scaledownroundup"><a class="header" href="#scaledownroundup">scaleDownRoundUp</a></h3>
+<pre><code class="language-solidity">function scaleDownRoundUp(uint256 a_, uint256 scaleDownBy_) internal pure returns (uint256 c_);
+</code></pre>
+<h3 id="scale18"><a class="header" href="#scale18">scale18</a></h3>
+<p>Scale a fixed point decimal of some scale factor to 18 decimals.</p>
+<pre><code class="language-solidity">function scale18(uint256 a_, uint256 decimals_, uint256 flags_) internal pure returns (uint256);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>a_</code></td><td><code>uint256</code></td><td>Some fixed point decimal value.</td></tr>
+<tr><td><code>decimals_</code></td><td><code>uint256</code></td><td>The number of fixed decimals of <code>a_</code>.</td></tr>
+<tr><td><code>flags_</code></td><td><code>uint256</code></td><td>Controls rounding and saturation.</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>uint256</code></td><td><code>a_</code> scaled to 18 decimals.</td></tr>
+</tbody></table>
+</div>
+<h3 id="scalen"><a class="header" href="#scalen">scaleN</a></h3>
+<p>Scale an 18 decimal fixed point value to some other scale.
+Exactly the inverse behaviour of <code>scale18</code>. Where <code>scale18</code> would scale
+up, <code>scaleN</code> scales down, and vice versa.</p>
+<pre><code class="language-solidity">function scaleN(uint256 a_, uint256 targetDecimals_, uint256 flags_) internal pure returns (uint256);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>a_</code></td><td><code>uint256</code></td><td>An 18 decimal fixed point number.</td></tr>
+<tr><td><code>targetDecimals_</code></td><td><code>uint256</code></td><td>The new scale of <code>a_</code>.</td></tr>
+<tr><td><code>flags_</code></td><td><code>uint256</code></td><td>Controls rounding and saturation.</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>uint256</code></td><td><code>a_</code> rescaled from 18 to <code>targetDecimals_</code>.</td></tr>
+</tbody></table>
+</div>
+<h3 id="scaleby"><a class="header" href="#scaleby">scaleBy</a></h3>
+<p>Scale a fixed point up or down by <code>scaleBy_</code> orders of magnitude.
+Notably <code>scaleBy</code> is a SIGNED integer so scaling down by negative OOMS
+is supported.</p>
+<pre><code class="language-solidity">function scaleBy(uint256 a_, int8 scaleBy_, uint256 flags_) internal pure returns (uint256);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>a_</code></td><td><code>uint256</code></td><td>Some integer of any scale.</td></tr>
+<tr><td><code>scaleBy_</code></td><td><code>int8</code></td><td>OOMs to scale <code>a_</code> up or down by. This is a SIGNED int8 which means it can be negative, and also means that sign extension MUST be considered if changing it to another type.</td></tr>
+<tr><td><code>flags_</code></td><td><code>uint256</code></td><td>Controls rounding and saturating.</td></tr>
+</tbody></table>
+</div>
+<p><strong>Returns</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>&lt;none&gt;</code></td><td><code>uint256</code></td><td><code>a_</code> rescaled according to <code>scaleBy_</code>.</td></tr>
+</tbody></table>
+</div>
+<h3 id="scaleratio"><a class="header" href="#scaleratio">scaleRatio</a></h3>
+<p>Scale an 18 decimal fixed point ratio of a_:b_ according to the decimals
+of a and b that each MAY NOT be 18.
+i.e. a subsequent call to <code>a_.fixedPointMul(ratio_)</code> would yield the
+value that it would have as though <code>a_</code> and <code>b_</code> were both 18 decimals
+and we hadn't rescaled the ratio.
+This is similar to <code>scaleBy</code> that calcualates the OOMs to scale by as
+<code>bDecimals_ - aDecimals_</code>.</p>
+<pre><code class="language-solidity">function scaleRatio(uint256 ratio_, uint8 aDecimals_, uint8 bDecimals_, uint256 flags_)
+    internal
+    pure
+    returns (uint256);
+</code></pre>
+<p><strong>Parameters</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td><code>ratio_</code></td><td><code>uint256</code></td><td>The ratio to be scaled.</td></tr>
+<tr><td><code>aDecimals_</code></td><td><code>uint8</code></td><td>The decimals of the ratio numerator.</td></tr>
+<tr><td><code>bDecimals_</code></td><td><code>uint8</code></td><td>The decimals of the ratio denominator.</td></tr>
+<tr><td><code>flags_</code></td><td><code>uint256</code></td><td>Controls rounding and saturating.</td></tr>
+</tbody></table>
+</div>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="solidity.min.js"></script>
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>
